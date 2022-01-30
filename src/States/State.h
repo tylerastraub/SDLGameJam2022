@@ -16,10 +16,13 @@ public:
 
     void setNextState(State* nextState);
     void setGameSize(int w, int h);
+    void setRenderSize(int w, int h);
     void setRenderer(SDL_Renderer* renderer);
 
     State* getNextState();
     SDL_Renderer* getRenderer();
+    SDL_Point getGameSize();
+    SDL_Point getRenderSize();
 
 protected:
 
@@ -27,9 +30,8 @@ private:
     State* _nextState = nullptr;
     SDL_Renderer* _renderer = nullptr;
 
-    int _gameWidth = 0;
-    int _gameHeight = 0;
-
+    SDL_Point _gameSize;
+    SDL_Point _renderSize;
 };
 
 #endif

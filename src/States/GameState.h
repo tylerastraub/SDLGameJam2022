@@ -4,6 +4,8 @@
 #include "State.h"
 #include "Mouse.h"
 
+#include <memory>
+
 class GameState : public State {
 public:
     GameState() = default;
@@ -16,7 +18,7 @@ public:
     void render() override;
 
 private:
-    Mouse _mouse;
+    std::unique_ptr<Mouse> _mouse;
 
 };
 

@@ -5,17 +5,35 @@
 
 class Mouse {
 public:
-    Mouse() = default;
+    /** 
+     * Creates a wrapper class that contains mouse info from SDL_GetMouseState(). This should be
+     * handled in the state that creates the mouse.
+     * 
+     * @param renderScale The ratio between the logical game size and the actual screen width. SDL_GetMouseState()
+     * returns coordinates of the mouse relative to actual screen size, so to get anything useful
+     * to the actual game, coordinates need to be scaled appropriately.
+     * 
+     **/
+    Mouse(float xRenderScale, float yRenderScale);
     ~Mouse() = default;
 
     void setPos(int x, int y);
     void setLeftButtonDown(bool leftButtonDown);
     void setRightButtonDown(bool rightButtonDown);
 
+    SDL_Point getMousePos();
+    int getMouseX();
+    int getMouseY();
+    bool isLeftButtonDown();
+    bool isRightButtonDown();
+
 private:
     SDL_Point _mousePos = {0, 0};
     bool _leftButtonDown = false;
     bool _rightButtonDown = false;
+
+    float _xRenderScale = 0.f;
+    float _yRenderScale = 0.f;;
 };
 
 #endif

@@ -21,9 +21,9 @@ private:
     SDL_Renderer* _renderer = nullptr;
 
     // The logical width of the game
-    const int GAME_WIDTH = 320;
+    const int GAME_WIDTH = 640;
     // The logical height of the game
-    const int GAME_HEIGHT = 180;
+    const int GAME_HEIGHT = 360;
     // The width of the screen. Note that this should be scaled based on GAME_WIDTH
     const int SCREEN_WIDTH = 1280;
     // The height of the screen. Note that this should be scaled based on GAME_HEIGHT

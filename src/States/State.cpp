@@ -5,8 +5,11 @@ void State::setNextState(State* nextState) {
 }
 
 void State::setGameSize(int w, int h) {
-    _gameWidth = w;
-    _gameHeight = h;
+    _gameSize = {w, h};
+}
+
+void State::setRenderSize(int w, int h) {
+    _renderSize = {w, h};
 }
 
 void State::setRenderer(SDL_Renderer* renderer) {
@@ -19,4 +22,12 @@ State* State::getNextState() {
 
 SDL_Renderer* State::getRenderer() {
     return _renderer;
+}
+
+SDL_Point State::getGameSize() {
+    return _gameSize;
+}
+
+SDL_Point State::getRenderSize() {
+    return _renderSize;
 }

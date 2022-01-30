@@ -57,6 +57,9 @@ bool GameLoop::init() {
                         // State initialization
                         _currentState = new GameState();
                         _currentState->setRenderer(_renderer);
+                        _currentState->setGameSize(GAME_WIDTH, GAME_HEIGHT);
+                        _currentState->setRenderSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+                        _currentState->init();
                         std::cout << "Success!" << std::endl;
                         gameInitSuccessful = true;
                     }
@@ -100,7 +103,9 @@ void GameLoop::startLoop() {
             State* tempState = _currentState->getNextState();
             delete _currentState;
             _currentState = tempState;
+            _currentState->setRenderer(_renderer);
             _currentState->setGameSize(GAME_WIDTH, GAME_HEIGHT);
+            _currentState->setRenderSize(SCREEN_WIDTH, SCREEN_HEIGHT);
             _currentState->init();
         }
 
