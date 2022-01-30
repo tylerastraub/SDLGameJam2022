@@ -1,0 +1,47 @@
+cmake_minimum_required(VERSION 3.7)
+project(SDLGameJam VERSION 0.1.0)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
+
+if(WIN32)
+    set(SDL2_INCLUDE_DIR "C:/Program Files/mingw-w64/mingw64/include/SDL2")
+    set(SDL2_LIBRARY_DIR "C:/Program Files/mingw-w64/mingw64/lib")
+    set(SDL2_IMAGE_INCLUDE_DIR "C:/SDL_image/include/SDL2")
+    set(SDL2_IMAGE_LIBRARY_DIR "C:/SDL_image/lib")
+    set(SDL2_TTF_INCLUDE_DIR "C:/SDL_ttf/include/SDL2")
+    set(SDL2_TTF_LIBRARY_DIR "C:/SDL_ttf/lib")
+elseif(APPLE)
+    find_package(SDL2 REQUIRED)
+    find_package(SDL2_image REQUIRED)
+    find_package(SDL2TTF REQUIRED)
+endif()
+
+set(SOURCE_INCLUDES
+    ${PROJECT_SOURCE_DIR}/src
+    ${PROJECT_SOURCE_DIR}/src/States
+    )
+set(SOURCES
+    ${PROJECT_SOURCE_DIR}/src/main.cpp
+    ${PROJECT_SOURCE_DIR}/src/GameLoop.cpp
+    ${PROJECT_SOURCE_DIR}/src/States/State.cpp
+    ${PROJECT_SOURCE_DIR}/src/States/GameState.cpp
+    )
+
+if(WIN32)
+    include_directories(${SDL2_INCLUDE_DIR} ${SDL2_IMAGE_INCLUDE_DIR} ${SDL2_TTF_INCLUDE_DIR} ${SOURCE_INCLUDES})
+    add_executable(SDLGameJam ${SOURCES})
+    # remove -mconsole for release builds
+    target_link_libraries(SDLGameJam -lmingw32 ${SDL2_LIBRARY_DIR}/libSDL2main.a ${SDL2_LIBRARY_DIR}/libSDL2.dll.a ${SDL2_IMAGE_LIBRARY_DIR}/libSDL2_image.dll.a ${SDL2_TTF_LIBRARY_DIR}/libSDL2_ttf.dll.a -mwindows -mconsole)
+elseif(APPLE)
+    include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS} ${SDL2_TTF_INCLUDE_DIR} ${SOURCE_INCLUDES})
+    add_executable(SDLGameJam ${SOURCES})
+    target_link_libraries(SDLGameJam ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${SDL2TTF_LIBRARY})
+endif()
+
+add_custom_command(TARGET SDLGameJam POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E copy_directory
+                    ${PROJECT_SOURCE_DIR}/res/ $<TARGET_FILE_DIR:SDLGameJam>/res/)
+
+set(CPACK_PROJECT_NAME ${PROJECT_NAME})
+set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
+include(CPack)
