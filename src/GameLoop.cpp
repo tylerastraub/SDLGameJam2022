@@ -91,6 +91,9 @@ void GameLoop::startLoop() {
                     _exitFlag = true;
                 }
             }
+            else if(e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEBUTTONUP) {
+                _currentState->handleMouseInput(e);
+            }
         }
 
         if(_currentState->getNextState() != nullptr) {

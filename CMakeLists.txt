@@ -19,12 +19,14 @@ endif()
 set(SOURCE_INCLUDES
     ${PROJECT_SOURCE_DIR}/src
     ${PROJECT_SOURCE_DIR}/src/States
+    ${PROJECT_SOURCE_DIR}/src/Input
     )
 set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/main.cpp
     ${PROJECT_SOURCE_DIR}/src/GameLoop.cpp
     ${PROJECT_SOURCE_DIR}/src/States/State.cpp
     ${PROJECT_SOURCE_DIR}/src/States/GameState.cpp
+    ${PROJECT_SOURCE_DIR}/src/Input/Mouse.cpp
     )
 
 if(WIN32)

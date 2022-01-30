@@ -10,6 +10,7 @@ public:
 
     virtual void init() = 0;
     virtual void handleInput() = 0;
+    virtual void handleMouseInput(SDL_Event e) = 0;
     virtual void tick(float timescale) = 0;
     virtual void render() = 0;
 
