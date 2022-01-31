@@ -20,6 +20,7 @@ set(SOURCE_INCLUDES
     ${PROJECT_SOURCE_DIR}/src
     ${PROJECT_SOURCE_DIR}/src/States
     ${PROJECT_SOURCE_DIR}/src/Input
+    ${PROJECT_SOURCE_DIR}/src/Level
     )
 set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/main.cpp
@@ -27,6 +28,7 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/States/State.cpp
     ${PROJECT_SOURCE_DIR}/src/States/GameState.cpp
     ${PROJECT_SOURCE_DIR}/src/Input/Mouse.cpp
+    ${PROJECT_SOURCE_DIR}/src/Level/Tilemap.cpp
     )
 
 if(WIN32)

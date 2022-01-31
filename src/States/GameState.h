@@ -3,6 +3,7 @@
 
 #include "State.h"
 #include "Mouse.h"
+#include "Tilemap.h"
 
 #include <memory>
 
@@ -19,6 +20,7 @@ public:
 
 private:
     std::unique_ptr<Mouse> _mouse;
+    Tilemap* _tilemap;
 
 };
 
