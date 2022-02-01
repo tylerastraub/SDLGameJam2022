@@ -4,6 +4,7 @@
 #include "State.h"
 #include "Mouse.h"
 #include "Tilemap.h"
+#include "CollisionDetector.h"
 
 #include <memory>
 
@@ -19,8 +20,12 @@ public:
     void render() override;
 
 private:
-    std::unique_ptr<Mouse> _mouse;
-    Tilemap* _tilemap;
+    std::unique_ptr<Mouse> _mouse = nullptr;
+    std::unique_ptr<Tilemap> _tilemap = nullptr;
+    std::unique_ptr<Grid> _grid = nullptr;
+    CollisionDetector _collisionDetector;
+
+    std::vector<SDL_Point> _shotPath;
 
 };
 

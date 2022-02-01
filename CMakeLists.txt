@@ -21,6 +21,7 @@ set(SOURCE_INCLUDES
     ${PROJECT_SOURCE_DIR}/src/States
     ${PROJECT_SOURCE_DIR}/src/Input
     ${PROJECT_SOURCE_DIR}/src/Level
+    ${PROJECT_SOURCE_DIR}/src/Collision
     )
 set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/main.cpp
@@ -29,6 +30,9 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/States/GameState.cpp
     ${PROJECT_SOURCE_DIR}/src/Input/Mouse.cpp
     ${PROJECT_SOURCE_DIR}/src/Level/Tilemap.cpp
+    ${PROJECT_SOURCE_DIR}/src/Level/Grid.cpp
+    ${PROJECT_SOURCE_DIR}/src/Collision/Edge.cpp
+    ${PROJECT_SOURCE_DIR}/src/Collision/CollisionDetector.cpp
     )
 
 if(WIN32)
