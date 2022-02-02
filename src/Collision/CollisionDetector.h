@@ -67,6 +67,13 @@ private:
      */
     bool pointIsOnLine(SDL_Point lineStart, SDL_Point lineEnd, SDL_Point point);
 
+    /** 
+     * @brief Determines whether or not there is an intersection between two lines and, if so, returns where the two lines intersect.
+     * 
+     * @return Returns {-1, -1} if no intersection is found. Otherwise, returns the point of intersection.
+     */
+    SDL_Point findWhereLinesIntersect(SDL_Point l1_start, SDL_Point l1_target, SDL_Point l2_start, SDL_Point l2_target);
+
 };
 
 #endif

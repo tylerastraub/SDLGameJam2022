@@ -18,40 +18,53 @@ std::vector<SDL_Point> CollisionDetector::calculateShotPath(Grid grid, SDL_Point
         SDL_Point collisionPoint = {-1, -1};
         std::vector<SDL_Point> shotLine = calculateLinePath(currentLineStart, currentLineTarget);
         std::vector<SDL_Point> cellsInPath = grid.getGridCellsIntersectingWithLine(currentLineStart, currentLineTarget);
-        std::vector<Edge> collidingEdges;
-        // Find all colliding edges
+        std::vector<Edge> potentialEdges;
+        // Find all potential colliding edges
         for(SDL_Point cell : cellsInPath) {
             std::list<Edge> edges = grid.getEdges(cell.x, cell.y);
             if(edges.size() > 0) {
-                for(auto it = edges.begin(); it != edges.end(); ++it) {
-                    if(linesAreIntersecting(currentLineStart, currentLineTarget, it->p1, it->p2)) {
-                        collidingEdges.push_back(*it);
-                    }
-                }
+                potentialEdges.insert(potentialEdges.end(), edges.begin(), edges.end());
             }
         }
-        // Then determine which one was actually first
-        for(SDL_Point linePoint : shotLine) {
-            if(collisionPoint.x != -1 && collisionPoint.y != -1) break;
-            for(Edge edge : collidingEdges) {
-                if(pointIsOnLine(edge.p1, edge.p2, linePoint)) {
-                    collisionPoint = linePoint;
-                }
-                else if(linesAreIntersecting(linePoint, linePoint, edge.p1, edge.p2)) {
-                    collisionPoint = linePoint;
-                }
+        
+        // Go cell by cell to find which edges are colliding, then determine which was first
+        std::vector<SDL_Point> collisionPoints;
+        collisionPoints.reserve(potentialEdges.size());
+        for(Edge edge : potentialEdges) {
+            SDL_Point collision = findWhereLinesIntersect(edge.p1, edge.p2, currentLineStart, currentLineTarget);
+            if(collision.x != -1 && collision.y != -1) {
+                collisionPoints.push_back(collision);
             }
         }
+
         // If no collision, just append current line and return
-        if(collisionPoint.x == -1 && collisionPoint.y == -1) {
+        if(collisionPoints.empty()) {
             result.insert(result.end(), shotLine.begin(), shotLine.end());
             return result;
         }
+        // Else if there's only 1 collision we can just go straight to it
+        else if(collisionPoints.size() == 1) {
+            collisionPoint = *collisionPoints.begin();
+        }
+        // If there are multiple collisions, we just go through them all and find the nearest one
+        else {
+            auto it = collisionPoints.begin();
+            SDL_Point p = *it;
+            float distance = std::hypot(currentLineStart.x - p.x, currentLineStart.y - p.y);
+            ++it;
+            for(; it != collisionPoints.end(); ++it) {
+                float newDistance = std::hypot(currentLineStart.x - it->x, currentLineStart.y - it->y);
+                if(newDistance < distance) p = *it;
+            }
+            collisionPoint = p;
+        }
 
-        // Add current line
+        // Calculate and add new line to the result
         std::vector<SDL_Point> newLine = calculateLinePath(currentLineStart, collisionPoint);
         result.insert(result.end(), newLine.begin(), newLine.end());
         // Then determine angle of next line
+        currentLineStart = collisionPoint;
+        // currentLineTarget = calculateNextLineAfterBounce();
 
         ++bounces;
     }
@@ -137,4 +150,26 @@ bool CollisionDetector::pointIsOnLine(SDL_Point lineStart, SDL_Point lineEnd, SD
         return dyl > 0 ? 
             lineStart.y <= point.y && point.y <= lineEnd.y :
             lineEnd.y <= point.y && point.y <= lineStart.y;
+}
+
+// Code from https://stackoverflow.com/a/1968345
+SDL_Point CollisionDetector::findWhereLinesIntersect(SDL_Point l1_start, SDL_Point l1_target, SDL_Point l2_start, SDL_Point l2_target) {
+    float s1_x = l1_target.x - l1_start.x;
+    float s1_y = l1_target.y - l1_start.y;
+    float s2_x = l2_target.x - l2_start.x;
+    float s2_y = l2_target.y - l2_start.y;
+
+    float s, t;
+    s = (-s1_y * (l1_start.x - l2_start.x) + s1_x * (l1_start.y - l2_start.y)) / (-s2_x * s1_y + s1_x * s2_y);
+    t = ( s2_x * (l1_start.y - l2_start.y) - s2_y * (l1_start.x - l2_start.x)) / (-s2_x * s1_y + s1_x * s2_y);
+
+    if (s >= 0 && s <= 1 && t >= 0 && t <= 1)
+    {
+        // Collision detected
+        SDL_Point collision = {l1_start.x + (int) (t * s1_x), l1_start.y + (int) (t * s1_y)};
+        return collision;
+    }
+
+    // No collision
+    return {-1, -1};
 }

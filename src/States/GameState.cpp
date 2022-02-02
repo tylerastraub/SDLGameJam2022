@@ -96,6 +96,8 @@ void GameState::render() {
                     break;
                 }
                 case TileType::SPECIAL: {
+                    SDL_SetRenderDrawColor(getRenderer(), 0x87, 0x87, 0x87, 0xFF);
+                    SDL_RenderFillRect(getRenderer(), &tile);
                     std::list<Edge> edges = _grid->getEdges(x, y);
                     for(Edge e : edges) {
                         SDL_SetRenderDrawColor(getRenderer(), 0xFF, 0xFF, 0x00, 0xAF);
