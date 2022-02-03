@@ -15,7 +15,8 @@ std::vector<SDL_Point> CollisionDetector::calculateShotPath(Grid grid, SDL_Point
     SDL_Point currentLineTarget = target;
     // Calculate each line
     while(bounces <= numOfBounces) {
-        std::cout << bounces << std::endl;
+        // std::cout << bounces << ": Starting at (" << currentLineStart.x << ", " << currentLineStart.y
+        // << "), ending at (" << currentLineTarget.x << ", " << currentLineTarget.y << ")" << std::endl;
         SDL_Point collisionPoint = {-1, -1};
         Edge collidedEdge = {{-1, -1}, {-1, -1}};
         std::vector<SDL_Point> shotLine = calculateLinePath(currentLineStart, currentLineTarget);
@@ -34,7 +35,8 @@ std::vector<SDL_Point> CollisionDetector::calculateShotPath(Grid grid, SDL_Point
         collisionPoints.reserve(potentialEdges.size());
         for(Edge edge : potentialEdges) {
             SDL_Point collision = findWhereLinesIntersect(edge.p1, edge.p2, currentLineStart, currentLineTarget);
-            if(collision.x != -1 && collision.y != -1) {
+            if((collision.x != -1 && collision.y != -1) &&
+               (collision.x != currentLineStart.x && collision.y != currentLineStart.y)) {
                 collisionPoints.push_back({edge, collision});
             }
         }
@@ -70,7 +72,7 @@ std::vector<SDL_Point> CollisionDetector::calculateShotPath(Grid grid, SDL_Point
         std::vector<SDL_Point> newLine = calculateLinePath(currentLineStart, collisionPoint);
         result.insert(result.end(), newLine.begin(), newLine.end());
         // Then determine angle of next line
-        currentLineTarget = calculateNextTargetAfterBounce(grid, currentLineStart, currentLineTarget, collidedEdge);
+        currentLineTarget = calculateNextTargetAfterBounce(grid, currentLineStart, collisionPoint, collidedEdge);
         currentLineStart = collisionPoint;
 
         ++bounces;
@@ -198,53 +200,10 @@ SDL_Point CollisionDetector::calculateNextTargetAfterBounce(Grid grid, SDL_Point
     else {
         normalVecOffset = potNormalVec2;
     }
-    // std::cout << "Normal vec 1: " << potNormalVec1.x << ", " << potNormalVec1.y
-    //     << " ; Normal vec 2: " << potNormalVec2.x << ", " << potNormalVec2.y
-    //     << " ; Actual normal vec: " << normalVecOffset.x << ", " << normalVecOffset.y << std::endl;
-
-    // Relocate normal vector so that it's hitting the collision point
-    float normalVecMagnitude = std::hypot(edgeDX, edgeDY);
-    float normalVecXMagnitude, normalVecYMagnitude;
-    if(normalVecOffset.x < 0) {
-        normalVecXMagnitude = (float) shotEnd.x / normalVecMagnitude;
-    }
-    else {
-        normalVecXMagnitude = (float) (grid.getGridWidth() - shotEnd.x) / normalVecMagnitude;
-    }
-    // float normalVecXMagnitude = (normalVecOffset.x < 0) ? (float) shotEnd.x / normalVecMagnitude : (float) (grid.getGridWidth() - shotEnd.x) / normalVecMagnitude;
-    normalVecYMagnitude = (normalVecOffset.y > 0) ? (float) shotEnd.y / normalVecMagnitude : (float) (grid.getGridHeight() - shotEnd.y) / normalVecMagnitude;
     normalVec = {shotEnd.x + normalVecOffset.x, shotEnd.y + normalVecOffset.y};
-    std::cout << "Collision point: " << shotEnd.x << ", " << shotEnd.y
-        << " ; Normal Vec: " << normalVec.x << ", " << normalVec.y << std::endl;
+    // std::cout << "Collision point: " << shotEnd.x << ", " << shotEnd.y
+    //     << " ; Normal Vec: " << normalVec.x << ", " << normalVec.y << std::endl;
     // std::cout << "X Magnitude: " << normalVecXMagnitude << ", Y Magnitude: " << normalVecYMagnitude << std::endl;
-
-    // Determine which quadrant we're in
-    // if(shotDX >= 0 && shotDY < 0) {
-    //     // Top right
-    //     std::cout << "top right" << std::endl;
-    // }
-    // else if(shotDX < 0 && shotDY < 0) {
-    //     // Top left
-    //     std::cout << "top left" << std::endl;
-    // }
-    // else if(shotDX < 0 && shotDY >= 0) {
-    //     // Bottom left
-    //     std::cout << "bottom left" << std::endl;
-    // }
-    // else {
-    //     // Bottom right
-    //     std::cout << "bottom right" << std::endl;
-    // }
-
-    // std::cout << angle * (180.0 / M_PI) << " degrees" << std::endl;
-    // std::cout << angle << "rad" << std::endl;
-    // Find shot target using angle
-    // double compAngle = (M_PI / 2) - std::abs(angle);
-    // compAngle *= (angle < 0) ? -1.0 : 1.0;
-    // std::cout << compAngle * (180.0 / M_PI) << std::endl;
-    // std::cout << normalVecLength << std::endl;
-    // SDL_Point coord = {(int) (32 * std::sin(angle)), int (32 * std::cos(angle))};
-    // std::cout << normalVec.x << ", " << normalVec.y << std::endl;
 
     return {normalVec.x, normalVec.y};
 }
