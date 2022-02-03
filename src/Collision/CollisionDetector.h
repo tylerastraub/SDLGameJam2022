@@ -6,19 +6,6 @@
 
 #include <vector>
 
-// Struct used to store edge with added distance from player
-namespace Collision {
-    struct EdgeDistance {
-        Edge edge;
-        float distance;
-
-        bool operator<(const EdgeDistance& rhs) const
-        {
-            return distance < rhs.distance;
-        }
-    };
-};
-
 // Helper class used to resolve collisions between entities as well as entities with the level.
 class CollisionDetector {
 public:
@@ -73,6 +60,16 @@ private:
      * @return Returns {-1, -1} if no intersection is found. Otherwise, returns the point of intersection.
      */
     SDL_Point findWhereLinesIntersect(SDL_Point l1_start, SDL_Point l1_target, SDL_Point l2_start, SDL_Point l2_target);
+
+    /**
+     * @brief Given a line colliding with an edge, find the target of the next line
+     * 
+     * @param shotStart The starting point of the shot
+     * @param shotEnd The ending point of the shot
+     * @param edge The edge the shot is colliding with
+     * @return SDL_Point 
+     */
+    SDL_Point calculateNextTargetAfterBounce(Grid grid, SDL_Point shotStart, SDL_Point shotEnd, Edge edge);
 
 };
 

@@ -17,6 +17,8 @@ public:
 
     void setGridSize(int w, int h);
 
+    int getGridWidth();
+    int getGridHeight();
     // Retrieve all edges stored in a grid cell
     std::list<Edge> getEdges(int x, int y);
     // Get all grid coordinates that intersect with a line

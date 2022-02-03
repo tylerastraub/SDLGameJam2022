@@ -1,4 +1,6 @@
 #include "Tilemap.h"
+#include "RightTriangle.h"
+#include "Square.h"
 
 #include <iostream>
 
@@ -18,23 +20,47 @@ Tilemap::Tilemap(std::vector<std::vector<int>> tilemap) {
         std::vector<TileType> row;
         for(int x = 0; x < _tilemapWidth; ++x) {
             row.push_back((TileType) tilemap[y][x]);
-            if(tilemap[y][x] == TileType::SOLID) {
-                // Top
-                _tilemapGrid->addEdge({{x * TILE_SIZE, y * TILE_SIZE}, {(x + 1) * TILE_SIZE - 1, y * TILE_SIZE}});
-                // Bottom
-                _tilemapGrid->addEdge({{x * TILE_SIZE, (y + 1) * TILE_SIZE - 1}, {(x + 1) * TILE_SIZE - 1, (y + 1) * TILE_SIZE - 1}});
-                // Left
-                _tilemapGrid->addEdge({{x * TILE_SIZE, y * TILE_SIZE}, {x * TILE_SIZE, (y + 1) * TILE_SIZE - 1}});
-                // Right
-                _tilemapGrid->addEdge({{(x + 1) * TILE_SIZE - 1, y * TILE_SIZE}, {(x + 1) * TILE_SIZE - 1, (y + 1) * TILE_SIZE - 1}});
-            }
-            else if(tilemap[y][x] == TileType::SPECIAL) {
-                // Hypotonuse
-                _tilemapGrid->addEdge({{x * TILE_SIZE, y * TILE_SIZE}, {(x + 1) * TILE_SIZE - 1, (y + 1) * TILE_SIZE - 1}});
-                // Bottom
-                _tilemapGrid->addEdge({{x * TILE_SIZE, (y + 1) * TILE_SIZE - 1}, {(x + 1) * TILE_SIZE - 1, (y + 1) * TILE_SIZE - 1}});
-                // Left
-                _tilemapGrid->addEdge({{x * TILE_SIZE, y * TILE_SIZE}, {x * TILE_SIZE, (y + 1) * TILE_SIZE - 1}});
+            switch(tilemap[y][x]) {
+                case(TileType::SQUARE): {
+                    Square square;
+                    for(auto edge : square.getEdges()) {
+                        _tilemapGrid->addEdge({{x * TILE_SIZE + edge.p1.x, y * TILE_SIZE + edge.p1.y},
+                            {x * TILE_SIZE + edge.p2.x, y * TILE_SIZE + edge.p2.y}});
+                    }
+                    break;
+                }
+                case(TileType::RIGHT_TRIANGLE_NORTH): {
+                    RightTriangle triangle(ObjectDirection::NORTH);
+                    for(auto edge : triangle.getEdges()) {
+                        _tilemapGrid->addEdge({{x * TILE_SIZE + edge.p1.x, y * TILE_SIZE + edge.p1.y},
+                            {x * TILE_SIZE + edge.p2.x, y * TILE_SIZE + edge.p2.y}});
+                    }
+                    break;
+                }
+                case(TileType::RIGHT_TRIANGLE_EAST): {
+                    RightTriangle triangle(ObjectDirection::EAST);
+                    for(auto edge : triangle.getEdges()) {
+                        _tilemapGrid->addEdge({{x * TILE_SIZE + edge.p1.x, y * TILE_SIZE + edge.p1.y},
+                            {x * TILE_SIZE + edge.p2.x, y * TILE_SIZE + edge.p2.y}});
+                    }
+                    break;
+                }
+                case(TileType::RIGHT_TRIANGLE_SOUTH): {
+                    RightTriangle triangle(ObjectDirection::SOUTH);
+                    for(auto edge : triangle.getEdges()) {
+                        _tilemapGrid->addEdge({{x * TILE_SIZE + edge.p1.x, y * TILE_SIZE + edge.p1.y},
+                            {x * TILE_SIZE + edge.p2.x, y * TILE_SIZE + edge.p2.y}});
+                    }
+                    break;
+                }
+                case(TileType::RIGHT_TRIANGLE_WEST): {
+                    RightTriangle triangle(ObjectDirection::WEST);
+                    for(auto edge : triangle.getEdges()) {
+                        _tilemapGrid->addEdge({{x * TILE_SIZE + edge.p1.x, y * TILE_SIZE + edge.p1.y},
+                            {x * TILE_SIZE + edge.p2.x, y * TILE_SIZE + edge.p2.y}});
+                    }
+                    break;
+                }
             }
         }
         _tilemap.push_back(row);

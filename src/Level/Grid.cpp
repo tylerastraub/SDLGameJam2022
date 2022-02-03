@@ -50,6 +50,14 @@ void Grid::setGridSize(int w, int h) {
     }
 }
 
+int Grid::getGridWidth() {
+    return _gridWidth;
+}
+
+int Grid::getGridHeight() {
+    return _gridHeight;
+}
+
 std::list<Edge> Grid::getEdges(int x, int y) {
     if(x >= _gridWidth || x < 0 || y >= _gridHeight || y < 0) {
         std::cout << "Error: invalid grid coordinates at (" << x << ", " << y << ")" << std::endl;
@@ -61,7 +69,7 @@ std::list<Edge> Grid::getEdges(int x, int y) {
 std::vector<SDL_Point> Grid::getGridCellsIntersectingWithLine(const SDL_Point p1, const SDL_Point p2) {
     if(p1.x < 0 || p1.x >= _gridWidth * _tileSize || p1.y < 0 || p1.y >= _gridHeight * _tileSize
        || p2.x < 0 || p2.x >= _gridWidth * _tileSize || p2.y < 0 || p2.y >= _gridHeight * _tileSize) {
-        std::cout << "Error: line coordinates out of bounds! P1: (" << p1.x << ", " << p1.y << "), P2: (" << p2.x << ", " << p2.y << ")" << std::endl;
+        // std::cout << "Error: line coordinates out of bounds! P1: (" << p1.x << ", " << p1.y << "), P2: (" << p2.x << ", " << p2.y << ")" << std::endl;
         return std::vector<SDL_Point>();
     }
 
