@@ -57,7 +57,7 @@ void GameState::handleMouseInput(SDL_Event e) {
 }
 
 void GameState::tick(float timescale) {
-    _shotPath = _collisionDetector.calculateShotPath(*_grid, {336, 180}, _mouse->getMousePos(), 1);
+    _shotPath = _collisionDetector.calculateShotPath(*_grid, {336, 180}, _mouse->getMousePos(), 2);
     if(_mouse->isLeftButtonDown()) {
         std::cout << "click" << std::endl;
     }

@@ -71,6 +71,8 @@ private:
      */
     SDL_Point calculateNextTargetAfterBounce(Grid grid, SDL_Point shotStart, SDL_Point shotEnd, Edge edge);
 
+    float calculateDotProduct(SDL_Point v1, SDL_Point v2);
+
 };
 
 #endif

@@ -184,15 +184,15 @@ SDL_Point CollisionDetector::findWhereLinesIntersect(SDL_Point l1_start, SDL_Poi
 }
 
 SDL_Point CollisionDetector::calculateNextTargetAfterBounce(Grid grid, SDL_Point shotStart, SDL_Point shotEnd, Edge edge) {
-    float shotDX = shotEnd.x - shotStart.x;
-    float shotDY = shotEnd.y - shotStart.y;
-    float edgeDX = edge.p2.x - edge.p1.x;
-    float edgeDY = edge.p2.y - edge.p1.y;
+    int shotDX = shotEnd.x - shotStart.x;
+    int shotDY = shotEnd.y - shotStart.y;
+    int edgeDX = edge.p2.x - edge.p1.x;
+    int edgeDY = edge.p2.y - edge.p1.y;
     
     // Determine which normal vector points in direction we want
     SDL_Point potNormalVec1 = {(int) (edgeDY * -1.f), (int) edgeDX};
     SDL_Point potNormalVec2 = {(int) edgeDY, (int) (edgeDX * -1.f)};
-    SDL_Point normalVec, normalVecOffset;
+    SDL_Point normalVec, normalVecOffset, vecComponentU, vecComponentW, newVec;
     if(std::hypot(shotDX + potNormalVec1.x, shotDY + potNormalVec1.y)
         < std::hypot(shotDX + potNormalVec2.x, shotDY + potNormalVec2.y)) {
         normalVecOffset = potNormalVec1;
@@ -201,9 +201,16 @@ SDL_Point CollisionDetector::calculateNextTargetAfterBounce(Grid grid, SDL_Point
         normalVecOffset = potNormalVec2;
     }
     normalVec = {shotEnd.x + normalVecOffset.x, shotEnd.y + normalVecOffset.y};
-    // std::cout << "Collision point: " << shotEnd.x << ", " << shotEnd.y
-    //     << " ; Normal Vec: " << normalVec.x << ", " << normalVec.y << std::endl;
-    // std::cout << "X Magnitude: " << normalVecXMagnitude << ", Y Magnitude: " << normalVecYMagnitude << std::endl;
 
-    return {normalVec.x, normalVec.y};
+    // Find new vector using dot product. Note that U is perpendicular to the wall and W is parallel
+    float dotProductN = calculateDotProduct({shotDX, shotDY}, normalVecOffset) / calculateDotProduct(normalVecOffset, normalVecOffset);
+    vecComponentU = {(int) (normalVecOffset.x * dotProductN), (int) (normalVecOffset.y * dotProductN)};
+    vecComponentW = {shotDX - vecComponentU.x, shotDY - vecComponentU.y};
+    newVec = {vecComponentW.x - vecComponentU.x, vecComponentW.y - vecComponentU.y};
+
+    return {shotEnd.x + newVec.x, shotEnd.y + newVec.y};
+}
+
+float CollisionDetector::calculateDotProduct(SDL_Point v1, SDL_Point v2) {
+    return v1.x * v2.x + v1.y * v2.y;
 }
