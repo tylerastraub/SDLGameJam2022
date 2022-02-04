@@ -4,6 +4,15 @@
 #include <chrono>
 #include <algorithm>
 
+/**
+ * TODO:
+ * - Fix little gaps between squares causing collision issues (could just cheat and make each square edge 1 pixel longer, then make tilemap slightly bigger to avoid out of bounds exceptions?)
+ * - Fix shot sometimes just going through walls (think this has to do with magnitude being too great?)
+ * - Fix bug where going perpendicular to wall lets you pass through it
+ * - Optimize line drawing which seems to get laggy when line is too long (or maybe it is bounce calculation that is laggy?)
+ * - Once angle calculations and bounces/whatnot are looking clean, move to adding a couple more basic objects, then add essential game entities (exit, bullet, etc.)
+ */
+
 void GameState::init() {
     SDL_Point gameSize = getGameSize();
     SDL_Point renderSize = getRenderSize();
@@ -57,7 +66,7 @@ void GameState::handleMouseInput(SDL_Event e) {
 }
 
 void GameState::tick(float timescale) {
-    _shotPath = _collisionDetector.calculateShotPath(*_grid, {336, 180}, _mouse->getMousePos(), 2);
+    _shotPath = _collisionDetector.calculateShotPath(*_grid, {336, 180}, _mouse->getMousePos(), 4);
     if(_mouse->isLeftButtonDown()) {
         std::cout << "click" << std::endl;
     }
@@ -66,17 +75,9 @@ void GameState::tick(float timescale) {
 void GameState::render() {
     SDL_SetRenderDrawColor(getRenderer(), 0x00, 0x00, 0x00, 0xFF);
     SDL_RenderClear(getRenderer());
-    
-    SDL_Point start = {-1, -1};
-    SDL_Point end = {-1, -1};
-    if(!_shotPath.empty()) {
-        start = _shotPath[0];
-        end = _shotPath[_shotPath.size() - 1];
-    }
 
+    // Render level
     const int tileSize = _tilemap->getTileSize();
-    std::vector<SDL_Point> intersectingCells = _grid->getGridCellsIntersectingWithLine(start, end);
-    // auto clock = std::chrono::high_resolution_clock::now();
     for(int x = 0; x < _tilemap->getTilemapWidth(); ++x) {
         for(int y = 0; y < _tilemap->getTilemapHeight(); ++y) {
             SDL_Rect tile = {x * tileSize, y * tileSize, tileSize, tileSize};
@@ -115,18 +116,14 @@ void GameState::render() {
             }
         }
     }
-    for(SDL_Point cell : intersectingCells) {
-        SDL_Rect tile = {cell.x * tileSize, cell.y * tileSize, tileSize, tileSize};
-        SDL_SetRenderDrawColor(getRenderer(), 0x00, 0x00, 0xFF, 0x8F);
-        SDL_RenderFillRect(getRenderer(), &tile);
-    }
-    // std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - clock).count() << "ms" << std::endl;
 
+    // Render shot path
+    // auto clock = std::chrono::high_resolution_clock::now();
     SDL_SetRenderDrawColor(getRenderer(), 0xFF, 0x00, 0x00, 0xAF);
     for(auto point : _shotPath) {
-        SDL_RenderDrawPoints(getRenderer(), _shotPath.data(), _shotPath.size());
+        SDL_RenderDrawPoint(getRenderer(), point.x, point.y);
     }
-    // SDL_RenderDrawLine(getRenderer(), start.x, start.y, end.x, end.y);
+    // std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - clock).count() << "ms" << std::endl;
 
     SDL_RenderPresent(getRenderer());
 }

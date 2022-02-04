@@ -58,21 +58,19 @@ int Grid::getGridHeight() {
     return _gridHeight;
 }
 
+int Grid::getTileSize() {
+    return _tileSize;
+}
+
 std::list<Edge> Grid::getEdges(int x, int y) {
     if(x >= _gridWidth || x < 0 || y >= _gridHeight || y < 0) {
-        std::cout << "Error: invalid grid coordinates at (" << x << ", " << y << ")" << std::endl;
+        // std::cout << "Error: invalid grid coordinates at (" << x << ", " << y << ")" << std::endl;
         return std::list<Edge>();
     }
     return _edgeMap[y * _gridWidth + x];
 }
 
 std::vector<SDL_Point> Grid::getGridCellsIntersectingWithLine(const SDL_Point p1, const SDL_Point p2) {
-    if(p1.x < 0 || p1.x >= _gridWidth * _tileSize || p1.y < 0 || p1.y >= _gridHeight * _tileSize
-       || p2.x < 0 || p2.x >= _gridWidth * _tileSize || p2.y < 0 || p2.y >= _gridHeight * _tileSize) {
-        // std::cout << "Error: line coordinates out of bounds! P1: (" << p1.x << ", " << p1.y << "), P2: (" << p2.x << ", " << p2.y << ")" << std::endl;
-        return std::vector<SDL_Point>();
-    }
-
     std::vector<SDL_Point> results;
     int x = p1.x / _tileSize;
     int y = p1.y / _tileSize;
@@ -114,4 +112,26 @@ float Grid::getFrac(float f) {
         f -= std::floor(f);
         return f * -1.f + 1.f;
     }
+}
+
+// Code from https://stackoverflow.com/a/1968345
+SDL_Point Grid::findWhereLinesIntersect(SDL_Point l1_start, SDL_Point l1_target, SDL_Point l2_start, SDL_Point l2_target) {
+    float s1_x = l1_target.x - l1_start.x;
+    float s1_y = l1_target.y - l1_start.y;
+    float s2_x = l2_target.x - l2_start.x;
+    float s2_y = l2_target.y - l2_start.y;
+
+    float s, t;
+    s = (-s1_y * (l1_start.x - l2_start.x) + s1_x * (l1_start.y - l2_start.y)) / (-s2_x * s1_y + s1_x * s2_y);
+    t = ( s2_x * (l1_start.y - l2_start.y) - s2_y * (l1_start.x - l2_start.x)) / (-s2_x * s1_y + s1_x * s2_y);
+
+    if (s >= 0 && s <= 1 && t >= 0 && t <= 1)
+    {
+        // Collision detected
+        SDL_Point collision = {l1_start.x + (int) (t * s1_x), l1_start.y + (int) (t * s1_y)};
+        return collision;
+    }
+
+    // No collision
+    return {-1, -1};
 }

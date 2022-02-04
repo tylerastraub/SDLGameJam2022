@@ -19,12 +19,14 @@ public:
 
     int getGridWidth();
     int getGridHeight();
+    int getTileSize();
     // Retrieve all edges stored in a grid cell
     std::list<Edge> getEdges(int x, int y);
     // Get all grid coordinates that intersect with a line
     std::vector<SDL_Point> getGridCellsIntersectingWithLine(const SDL_Point p1, const SDL_Point p2);
 
 private:
+    SDL_Point findWhereLinesIntersect(SDL_Point l1_start, SDL_Point l1_target, SDL_Point l2_start, SDL_Point l2_target);
     // Gets frac of float (works for negative numbers)
     float getFrac(float f);
 

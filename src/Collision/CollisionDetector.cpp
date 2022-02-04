@@ -6,7 +6,6 @@
 #include <iostream>
 #include <algorithm>
 
-// TODO: https://stackoverflow.com/questions/573084/how-to-calculate-bounce-angle
 // Use raycast to find first collision, calculate angle based on edge it collides with, increment bounces, then start calculating next line
 std::vector<SDL_Point> CollisionDetector::calculateShotPath(Grid grid, SDL_Point start, SDL_Point target, int numOfBounces) {
     std::vector<SDL_Point> result;
@@ -183,6 +182,7 @@ SDL_Point CollisionDetector::findWhereLinesIntersect(SDL_Point l1_start, SDL_Poi
     return {-1, -1};
 }
 
+// Referenced https://stackoverflow.com/questions/573084/how-to-calculate-bounce-angle
 SDL_Point CollisionDetector::calculateNextTargetAfterBounce(Grid grid, SDL_Point shotStart, SDL_Point shotEnd, Edge edge) {
     int shotDX = shotEnd.x - shotStart.x;
     int shotDY = shotEnd.y - shotStart.y;
@@ -192,7 +192,7 @@ SDL_Point CollisionDetector::calculateNextTargetAfterBounce(Grid grid, SDL_Point
     // Determine which normal vector points in direction we want
     SDL_Point potNormalVec1 = {(int) (edgeDY * -1.f), (int) edgeDX};
     SDL_Point potNormalVec2 = {(int) edgeDY, (int) (edgeDX * -1.f)};
-    SDL_Point normalVec, normalVecOffset, vecComponentU, vecComponentW, newVec;
+    SDL_Point normalVecOffset, vecComponentU, vecComponentW, newVec;
     if(std::hypot(shotDX + potNormalVec1.x, shotDY + potNormalVec1.y)
         < std::hypot(shotDX + potNormalVec2.x, shotDY + potNormalVec2.y)) {
         normalVecOffset = potNormalVec1;
@@ -200,7 +200,6 @@ SDL_Point CollisionDetector::calculateNextTargetAfterBounce(Grid grid, SDL_Point
     else {
         normalVecOffset = potNormalVec2;
     }
-    normalVec = {shotEnd.x + normalVecOffset.x, shotEnd.y + normalVecOffset.y};
 
     // Find new vector using dot product. Note that U is perpendicular to the wall and W is parallel
     float dotProductN = calculateDotProduct({shotDX, shotDY}, normalVecOffset) / calculateDotProduct(normalVecOffset, normalVecOffset);
@@ -208,7 +207,8 @@ SDL_Point CollisionDetector::calculateNextTargetAfterBounce(Grid grid, SDL_Point
     vecComponentW = {shotDX - vecComponentU.x, shotDY - vecComponentU.y};
     newVec = {vecComponentW.x - vecComponentU.x, vecComponentW.y - vecComponentU.y};
 
-    return {shotEnd.x + newVec.x, shotEnd.y + newVec.y};
+    float magnitude = (float) grid.getGridWidth() * grid.getTileSize() / std::hypot(newVec.x, newVec.y);
+    return {(int) (shotEnd.x + newVec.x * magnitude), (int) (shotEnd.y + newVec.y * magnitude)};
 }
 
 float CollisionDetector::calculateDotProduct(SDL_Point v1, SDL_Point v2) {
