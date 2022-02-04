@@ -1,6 +1,7 @@
 #include "Tilemap.h"
 #include "RightTriangle.h"
 #include "Square.h"
+#include "Diamond.h"
 
 #include <iostream>
 
@@ -56,6 +57,14 @@ Tilemap::Tilemap(std::vector<std::vector<int>> tilemap) {
                 case(TileType::RIGHT_TRIANGLE_WEST): {
                     RightTriangle triangle(ObjectDirection::WEST);
                     for(auto edge : triangle.getEdges()) {
+                        _tilemapGrid->addEdge({{x * TILE_SIZE + edge.p1.x, y * TILE_SIZE + edge.p1.y},
+                            {x * TILE_SIZE + edge.p2.x, y * TILE_SIZE + edge.p2.y}});
+                    }
+                    break;
+                }
+                case(TileType::DIAMOND): {
+                    Diamond diamond;
+                    for(auto edge : diamond.getEdges()) {
                         _tilemapGrid->addEdge({{x * TILE_SIZE + edge.p1.x, y * TILE_SIZE + edge.p1.y},
                             {x * TILE_SIZE + edge.p2.x, y * TILE_SIZE + edge.p2.y}});
                     }
