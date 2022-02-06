@@ -6,10 +6,7 @@
 
 /**
  * TODO:
- * - Fix little gaps between objects causing collision issues (could just cheat and make each square edge 1 pixel longer, then make tilemap slightly bigger to avoid out of bounds exceptions?)
- * - Fix shot sometimes just going through walls (think this has to do with magnitude being too great?)
- * - Fix bug where going perpendicular to wall lets you pass through it
- * - Once angle calculations and bounces/whatnot are looking clean, move to adding a couple more basic objects, then add essential game entities (exit, bullet, etc.)
+ * - Add a couple more basic objects, then add essential game entities (exit, bullet, etc.)
  */
 
 void GameState::init() {
@@ -22,9 +19,9 @@ void GameState::init() {
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
         {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
         {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 1},
+        {1, 0, 0, 0, 3, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 4, 0, 0, 1},
         {1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 0, 2, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 1},
         {1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
         {1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 1},
         {1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -65,7 +62,7 @@ void GameState::handleMouseInput(SDL_Event e) {
 }
 
 void GameState::tick(float timescale) {
-    _shotPath = _collisionDetector.calculateShotPath(*_grid, {336, 180}, _mouse->getMousePos(), 4);
+    _shotPath = _collisionDetector.calculateShotPath(*_grid, {336, 180}, _mouse->getMousePos(), _numOfBounces);
     if(_mouse->isLeftButtonDown()) {
         std::cout << "click" << std::endl;
     }
@@ -88,11 +85,6 @@ void GameState::render() {
                 case TileType::SQUARE: {
                     SDL_SetRenderDrawColor(getRenderer(), 0x87, 0x87, 0x87, 0xFF);
                     SDL_RenderFillRect(getRenderer(), &tile);
-                    std::list<Edge> edges = _grid->getEdges(x, y);
-                    for(Edge e : edges) {
-                        SDL_SetRenderDrawColor(getRenderer(), 0xFF, 0xFF, 0x00, 0xAF);
-                        SDL_RenderDrawLine(getRenderer(), e.p1.x, e.p1.y, e.p2.x, e.p2.y);
-                    }
                     break;
                 }
                 case TileType::RIGHT_TRIANGLE_NORTH:
@@ -102,17 +94,18 @@ void GameState::render() {
                 case TileType::DIAMOND: {
                     SDL_SetRenderDrawColor(getRenderer(), 0x87, 0x87, 0x87, 0xFF);
                     SDL_RenderFillRect(getRenderer(), &tile);
-                    std::list<Edge> edges = _grid->getEdges(x, y);
-                    for(Edge e : edges) {
-                        SDL_SetRenderDrawColor(getRenderer(), 0xFF, 0xFF, 0x00, 0xAF);
-                        SDL_RenderDrawLine(getRenderer(), e.p1.x, e.p1.y, e.p2.x, e.p2.y);
-                    }
                     break;
                 }
                 default:
                     SDL_SetRenderDrawColor(getRenderer(), 0xFF, 0x00, 0xFF, 0xFF);
                     SDL_RenderFillRect(getRenderer(), &tile);
                     break;
+            }
+            // DEBUG: draw all collision edges (hitboxes)
+            std::list<Edge> edges = _grid->getEdges(x, y);
+            for(Edge e : edges) {
+                SDL_SetRenderDrawColor(getRenderer(), 0xFF, 0xFF, 0x00, 0xAF);
+                SDL_RenderDrawLine(getRenderer(), e.p1.x, e.p1.y, e.p2.x, e.p2.y);
             }
         }
     }

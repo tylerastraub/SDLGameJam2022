@@ -34,8 +34,9 @@ std::vector<SDL_Point> CollisionDetector::calculateShotPath(Grid grid, SDL_Point
         collisionPoints.reserve(potentialEdges.size());
         for(Edge edge : potentialEdges) {
             SDL_Point collision = findWhereLinesIntersect(edge.p1, edge.p2, currentLineStart, currentLineTarget);
-            if((collision.x != -1 && collision.y != -1) &&
-               (collision.x != currentLineStart.x && collision.y != currentLineStart.y)) {
+            if(collision.x != -1 && collision.y != -1) {
+                // instead of this quick fix (which is likely causing perpendicular angle bug) can just look at normal vec to move next line start by 1 pixel out of collided edge
+            //    (collision.x != currentLineStart.x && collision.y != currentLineStart.y)) {
                 collisionPoints.push_back({edge, collision});
             }
         }
@@ -71,8 +72,11 @@ std::vector<SDL_Point> CollisionDetector::calculateShotPath(Grid grid, SDL_Point
         std::vector<SDL_Point> newLine = calculateLinePath(currentLineStart, collisionPoint);
         result.insert(result.end(), newLine.begin(), newLine.end());
         // Then determine angle of next line
-        currentLineTarget = calculateNextTargetAfterBounce(grid, currentLineStart, collisionPoint, collidedEdge);
-        currentLineStart = collisionPoint;
+        SDL_Point normalVec;
+        currentLineTarget = calculateNextTargetAfterBounce(grid, currentLineStart, collisionPoint, collidedEdge, normalVec);
+        if(normalVec.x > 0) normalVec.x = 1; else if(normalVec.x < 0) normalVec.x = -1;
+        if(normalVec.y > 0) normalVec.y = 1; else if(normalVec.y < 0) normalVec.y = -1;
+        currentLineStart = {collisionPoint.x + normalVec.x, collisionPoint.y + normalVec.y};
 
         ++bounces;
     }
@@ -162,19 +166,19 @@ bool CollisionDetector::pointIsOnLine(SDL_Point lineStart, SDL_Point lineEnd, SD
 
 // Code from https://stackoverflow.com/a/1968345
 SDL_Point CollisionDetector::findWhereLinesIntersect(SDL_Point l1_start, SDL_Point l1_target, SDL_Point l2_start, SDL_Point l2_target) {
-    float s1_x = l1_target.x - l1_start.x;
-    float s1_y = l1_target.y - l1_start.y;
-    float s2_x = l2_target.x - l2_start.x;
-    float s2_y = l2_target.y - l2_start.y;
+    float l1_dx = l1_target.x - l1_start.x;
+    float l1_dy = l1_target.y - l1_start.y;
+    float l2_dx = l2_target.x - l2_start.x;
+    float l2_dy = l2_target.y - l2_start.y;
 
     float s, t;
-    s = (-s1_y * (l1_start.x - l2_start.x) + s1_x * (l1_start.y - l2_start.y)) / (-s2_x * s1_y + s1_x * s2_y);
-    t = ( s2_x * (l1_start.y - l2_start.y) - s2_y * (l1_start.x - l2_start.x)) / (-s2_x * s1_y + s1_x * s2_y);
+    s = (-l1_dy * (l1_start.x - l2_start.x) + l1_dx * (l1_start.y - l2_start.y)) / (-l2_dx * l1_dy + l1_dx * l2_dy);
+    t = ( l2_dx * (l1_start.y - l2_start.y) - l2_dy * (l1_start.x - l2_start.x)) / (-l2_dx * l1_dy + l1_dx * l2_dy);
 
     if (s >= 0 && s <= 1 && t >= 0 && t <= 1)
     {
         // Collision detected
-        SDL_Point collision = {l1_start.x + (int) (t * s1_x), l1_start.y + (int) (t * s1_y)};
+        SDL_Point collision = {l1_start.x + (int) (t * l1_dx), l1_start.y + (int) (t * l1_dy)};
         return collision;
     }
 
@@ -183,7 +187,7 @@ SDL_Point CollisionDetector::findWhereLinesIntersect(SDL_Point l1_start, SDL_Poi
 }
 
 // Referenced https://stackoverflow.com/questions/573084/how-to-calculate-bounce-angle
-SDL_Point CollisionDetector::calculateNextTargetAfterBounce(Grid grid, SDL_Point shotStart, SDL_Point shotEnd, Edge edge) {
+SDL_Point CollisionDetector::calculateNextTargetAfterBounce(Grid grid, SDL_Point shotStart, SDL_Point shotEnd, Edge edge, SDL_Point& normalVec) {
     int shotDX = shotEnd.x - shotStart.x;
     int shotDY = shotEnd.y - shotStart.y;
     int edgeDX = edge.p2.x - edge.p1.x;
@@ -200,6 +204,7 @@ SDL_Point CollisionDetector::calculateNextTargetAfterBounce(Grid grid, SDL_Point
     else {
         normalVecOffset = potNormalVec2;
     }
+    normalVec = normalVecOffset;
 
     // Find new vector using dot product. Note that U is perpendicular to the wall and W is parallel
     float dotProductN = calculateDotProduct({shotDX, shotDY}, normalVecOffset) / calculateDotProduct(normalVecOffset, normalVecOffset);

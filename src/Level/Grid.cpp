@@ -35,7 +35,7 @@ void Grid::addEdge(Edge edge) {
     }
     for(int x = start.x; x <= end.x; ++x) {
         for(int y = start.y; y <= end.y; ++y) {
-            _edgeMap[y * _gridWidth + x].emplace_back(edge);
+            if(y * _gridWidth + x < _edgeMap.size()) _edgeMap[y * _gridWidth + x].emplace_back(edge);
         }
     }
 }

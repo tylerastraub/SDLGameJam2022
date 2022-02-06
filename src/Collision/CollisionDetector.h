@@ -69,7 +69,7 @@ private:
      * @param edge The edge the shot is colliding with
      * @return SDL_Point 
      */
-    SDL_Point calculateNextTargetAfterBounce(Grid grid, SDL_Point shotStart, SDL_Point shotEnd, Edge edge);
+    SDL_Point calculateNextTargetAfterBounce(Grid grid, SDL_Point shotStart, SDL_Point shotEnd, Edge edge, SDL_Point& normalVec);
 
     float calculateDotProduct(SDL_Point v1, SDL_Point v2);
 

@@ -2,22 +2,22 @@
 
 Square::Square() {
     // Top
-    addEdge({{0, 0}, {TILE_SIZE - 1, 0}});
+    addEdge({{-1, -1}, {TILE_SIZE, -1}});
     // Right
-    addEdge({{TILE_SIZE - 1, 0}, {TILE_SIZE - 1, TILE_SIZE - 1}});
+    addEdge({{TILE_SIZE, -1}, {TILE_SIZE, TILE_SIZE}});
     // Bottom
-    addEdge({{0, TILE_SIZE - 1}, {TILE_SIZE - 1, TILE_SIZE - 1}});
+    addEdge({{-1, TILE_SIZE}, {TILE_SIZE, TILE_SIZE}});
     // Left
-    addEdge({{0, 0}, {0, TILE_SIZE - 1}});
+    addEdge({{-1, -1}, {-1, TILE_SIZE}});
 }
 
 Square::Square(ObjectDirection dir) {
     // Top
-    addEdge({{0, 0}, {TILE_SIZE - 1, 0}});
+    addEdge({{-1, -1}, {TILE_SIZE, -1}});
     // Right
-    addEdge({{TILE_SIZE - 1, 0}, {TILE_SIZE - 1, TILE_SIZE - 1}});
+    addEdge({{TILE_SIZE, -1}, {TILE_SIZE, TILE_SIZE}});
     // Bottom
-    addEdge({{0, TILE_SIZE - 1}, {TILE_SIZE - 1, TILE_SIZE - 1}});
+    addEdge({{-1, TILE_SIZE}, {TILE_SIZE, TILE_SIZE}});
     // Left
-    addEdge({{0, 0}, {0, TILE_SIZE - 1}});
+    addEdge({{-1, -1}, {-1, TILE_SIZE}});
 }

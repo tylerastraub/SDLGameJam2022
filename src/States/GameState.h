@@ -26,7 +26,7 @@ private:
     CollisionDetector _collisionDetector;
 
     std::vector<SDL_Point> _shotPath;
-
+    int _numOfBounces = 4;
 };
 
 #endif
