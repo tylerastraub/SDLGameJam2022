@@ -2,6 +2,7 @@
 #include "RightTriangle.h"
 #include "Square.h"
 #include "Diamond.h"
+#include "LongRightTriangle.h"
 
 #include <iostream>
 
@@ -65,6 +66,38 @@ Tilemap::Tilemap(std::vector<std::vector<int>> tilemap) {
                 case(TileType::DIAMOND): {
                     Diamond diamond;
                     for(auto edge : diamond.getEdges()) {
+                        _tilemapGrid->addEdge({{x * TILE_SIZE + edge.p1.x, y * TILE_SIZE + edge.p1.y},
+                            {x * TILE_SIZE + edge.p2.x, y * TILE_SIZE + edge.p2.y}});
+                    }
+                    break;
+                }
+                case(TileType::LONG_RIGHT_TRIANGLE_NORTH): {
+                    LongRightTriangle triangle(ObjectDirection::NORTH);
+                    for(auto edge : triangle.getEdges()) {
+                        _tilemapGrid->addEdge({{x * TILE_SIZE + edge.p1.x, y * TILE_SIZE + edge.p1.y},
+                            {x * TILE_SIZE + edge.p2.x, y * TILE_SIZE + edge.p2.y}});
+                    }
+                    break;
+                }
+                case(TileType::LONG_RIGHT_TRIANGLE_EAST): {
+                    LongRightTriangle triangle(ObjectDirection::EAST);
+                    for(auto edge : triangle.getEdges()) {
+                        _tilemapGrid->addEdge({{x * TILE_SIZE + edge.p1.x, y * TILE_SIZE + edge.p1.y},
+                            {x * TILE_SIZE + edge.p2.x, y * TILE_SIZE + edge.p2.y}});
+                    }
+                    break;
+                }
+                case(TileType::LONG_RIGHT_TRIANGLE_SOUTH): {
+                    LongRightTriangle triangle(ObjectDirection::SOUTH);
+                    for(auto edge : triangle.getEdges()) {
+                        _tilemapGrid->addEdge({{x * TILE_SIZE + edge.p1.x, y * TILE_SIZE + edge.p1.y},
+                            {x * TILE_SIZE + edge.p2.x, y * TILE_SIZE + edge.p2.y}});
+                    }
+                    break;
+                }
+                case(TileType::LONG_RIGHT_TRIANGLE_WEST): {
+                    LongRightTriangle triangle(ObjectDirection::WEST);
+                    for(auto edge : triangle.getEdges()) {
                         _tilemapGrid->addEdge({{x * TILE_SIZE + edge.p1.x, y * TILE_SIZE + edge.p1.y},
                             {x * TILE_SIZE + edge.p2.x, y * TILE_SIZE + edge.p2.y}});
                     }

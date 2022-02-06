@@ -37,6 +37,7 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/Level/Objects/RightTriangle.cpp
     ${PROJECT_SOURCE_DIR}/src/Level/Objects/Square.cpp
     ${PROJECT_SOURCE_DIR}/src/Level/Objects/Diamond.cpp
+    ${PROJECT_SOURCE_DIR}/src/Level/Objects/LongRightTriangle.cpp
     ${PROJECT_SOURCE_DIR}/src/Collision/Edge.cpp
     ${PROJECT_SOURCE_DIR}/src/Collision/CollisionDetector.cpp
     )

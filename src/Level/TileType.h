@@ -13,4 +13,12 @@ enum TileType {
     RIGHT_TRIANGLE_WEST = 5,
     // Four sided diamond
     DIAMOND = 6,
+    // Long right triangle facing north
+    LONG_RIGHT_TRIANGLE_NORTH = 7,
+    // Long right triangle facing east
+    LONG_RIGHT_TRIANGLE_EAST = 8,
+    // Long right triangle facing south
+    LONG_RIGHT_TRIANGLE_SOUTH = 9,
+    // Long right triangle facing west
+    LONG_RIGHT_TRIANGLE_WEST = 10,
 };
