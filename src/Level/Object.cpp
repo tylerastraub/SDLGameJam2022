@@ -8,6 +8,10 @@ void Object::setDirection(ObjectDirection dir) {
     _direction = dir;
 }
 
+void Object::setObjectSpritesheet(Spritesheet spritesheet) {
+    _objectSpritesheet = spritesheet;
+}
+
 std::list<Edge> Object::getEdges() {
     return _edges;
 }

@@ -2,6 +2,7 @@
 #define OBJECT_H
 
 #include "Edge.h"
+#include "Spritesheet.h"
 
 #include <list>
 
@@ -20,8 +21,10 @@ public:
 
     // Method called upon object colliding with shot
     virtual void collisionEvent() = 0;
+    virtual void render(int xOffset, int yOffset) = 0;
 
     void setDirection(ObjectDirection dir);
+    void setObjectSpritesheet(Spritesheet spritesheet);
 
     std::list<Edge> getEdges();
     ObjectDirection getDirection();
@@ -36,6 +39,7 @@ private:
     std::list<Edge> _edges;
     
     ObjectDirection _direction = ObjectDirection::NORTH;
+    Spritesheet _objectSpritesheet;
 
 };
 

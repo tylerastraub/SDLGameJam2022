@@ -24,6 +24,8 @@ set(SOURCE_INCLUDES
     ${PROJECT_SOURCE_DIR}/src/Level
     ${PROJECT_SOURCE_DIR}/src/Level/Objects
     ${PROJECT_SOURCE_DIR}/src/Collision
+    ${PROJECT_SOURCE_DIR}/src/Entities
+    ${PROJECT_SOURCE_DIR}/src/Render
     )
 set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/main.cpp
@@ -40,6 +42,9 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/Level/Objects/LongRightTriangle.cpp
     ${PROJECT_SOURCE_DIR}/src/Collision/Edge.cpp
     ${PROJECT_SOURCE_DIR}/src/Collision/CollisionDetector.cpp
+    ${PROJECT_SOURCE_DIR}/src/Entities/Entity.cpp
+    ${PROJECT_SOURCE_DIR}/src/Entities/Projectile.cpp
+    ${PROJECT_SOURCE_DIR}/src/Render/Spritesheet.cpp
     )
 
 if(WIN32)

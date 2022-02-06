@@ -7,8 +7,10 @@ class Diamond : public Object {
 public:
     Diamond();
     Diamond(ObjectDirection dir);
+    ~Diamond() = default;
 
     void collisionEvent() override {};
+    void render(int xOffset, int yOffset) override {};
 
 private:
 

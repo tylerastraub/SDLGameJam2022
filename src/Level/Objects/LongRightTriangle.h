@@ -7,8 +7,10 @@ class LongRightTriangle : public Object {
 public:
     LongRightTriangle();
     LongRightTriangle(ObjectDirection dir);
+    ~LongRightTriangle() = default;
 
     void collisionEvent() override {};
+    void render(int xOffset, int yOffset) override {};
 
 private:
 
