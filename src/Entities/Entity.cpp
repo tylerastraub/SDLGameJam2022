@@ -15,3 +15,7 @@ void Entity::setPosition(int x, int y) {
 void Entity::setSpritesheet(Spritesheet spritesheet) {
     _entitySpritesheet = spritesheet;
 }
+
+SDL_Point Entity::getPosition() {
+    return _position;
+}

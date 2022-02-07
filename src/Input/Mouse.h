@@ -20,17 +20,20 @@ public:
     void setPos(int x, int y);
     void setLeftButtonDown(bool leftButtonDown);
     void setRightButtonDown(bool rightButtonDown);
+    void setMouseMoved(bool moved);
 
     SDL_Point getMousePos();
     int getMouseX();
     int getMouseY();
     bool isLeftButtonDown();
     bool isRightButtonDown();
+    bool mouseMoved();
 
 private:
     SDL_Point _mousePos = {0, 0};
     bool _leftButtonDown = false;
     bool _rightButtonDown = false;
+    bool _mouseMoved = false;
 
     float _xRenderScale = 0.f;
     float _yRenderScale = 0.f;;

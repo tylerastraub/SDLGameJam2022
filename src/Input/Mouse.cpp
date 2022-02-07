@@ -15,6 +15,10 @@ void Mouse::setRightButtonDown(bool rightButtonDown) {
     _rightButtonDown = rightButtonDown;
 }
 
+void Mouse::setMouseMoved(bool moved) {
+    _mouseMoved = moved;
+}
+
 SDL_Point Mouse::getMousePos() {
     return _mousePos;
 }
@@ -33,4 +37,8 @@ bool Mouse::isLeftButtonDown() {
 
 bool Mouse::isRightButtonDown() {
     return _rightButtonDown;
+}
+
+bool Mouse::mouseMoved() {
+    return _mouseMoved;
 }

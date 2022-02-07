@@ -32,6 +32,9 @@ void GameState::init() {
     _tilemap = std::make_unique<Tilemap>(testMap);
     _grid = std::make_unique<Grid>(_tilemap->getGrid());
     _tilemap->printTilemap();
+
+    _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _mouse->getMousePos(), _numOfGuideLineBounces);
+    _shotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _mouse->getMousePos(), _numOfBounces);
 }
 
 void GameState::handleInput() {}
@@ -42,8 +45,10 @@ void GameState::handleMouseInput(SDL_Event e) {
         int y = 0;
         SDL_GetMouseState(&x, &y);
         _mouse->setPos(x, y);
+        _mouse->setMouseMoved(true);
     }
     else if(e.type == SDL_MOUSEBUTTONDOWN) {
+        _mouse->setMouseMoved(false);
         if(e.button.button == SDL_BUTTON_LEFT) {
             _mouse->setLeftButtonDown(true);
         }
@@ -52,6 +57,7 @@ void GameState::handleMouseInput(SDL_Event e) {
         } 
     }
     else if(e.type == SDL_MOUSEBUTTONUP) {
+        _mouse->setMouseMoved(false);
         if(e.button.button == SDL_BUTTON_LEFT) {
             _mouse->setLeftButtonDown(false);
         }
@@ -59,12 +65,31 @@ void GameState::handleMouseInput(SDL_Event e) {
             _mouse->setRightButtonDown(false);
         } 
     }
+    else {
+        _mouse->setMouseMoved(false);
+    }
 }
 
 void GameState::tick(float timescale) {
-    _shotPath = _collisionDetector.calculateShotPath(*_grid, {336, 180}, _mouse->getMousePos(), _numOfBounces);
+    if(_mouse->mouseMoved()) {
+        _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _mouse->getMousePos(), _numOfGuideLineBounces);
+    }
+
+    if(_shot) {
+        if(_shot->isAtEndOfPath()) {
+            delete _shot;
+            _shot = nullptr;
+        }
+        else {
+            _shot->tick(timescale);
+        }
+    }
     if(_mouse->isLeftButtonDown()) {
-        std::cout << "click" << std::endl;
+        if(_shot) delete _shot;
+        _shotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _mouse->getMousePos(), _numOfBounces);
+        auto s = _shotPath.begin();
+        _shot = new Projectile(s->x, s->y);
+        _shot->setPath(_shotPath);
     }
 }
 
@@ -117,10 +142,16 @@ void GameState::render() {
     // Render shot path
     // auto clock = std::chrono::high_resolution_clock::now();
     SDL_SetRenderDrawColor(getRenderer(), 0xFF, 0x00, 0x00, 0xAF);
-    for(auto point : _shotPath) {
+    for(auto point : _guideLineShotPath) {
         SDL_RenderDrawPoint(getRenderer(), point.x, point.y);
     }
     // std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - clock).count() << "ms" << std::endl;
+
+    if(_shot) {
+        SDL_SetRenderDrawColor(getRenderer(), 0xFF, 0xFF, 0xFF, 0xFF);
+        SDL_Rect r = {_shot->getPosition().x - 1, _shot->getPosition().y - 1, 3, 3};
+        SDL_RenderDrawRect(getRenderer(), &r);
+    }
 
     SDL_RenderPresent(getRenderer());
 }

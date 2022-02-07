@@ -7,22 +7,24 @@
 
 class Projectile : public Entity {
 public:
-    Projectile() = default;
+    Projectile(int x, int y);
     ~Projectile() = default;
 
     void tick(float timescale) override;
     void render(int xOffset, int yOffset) override;
+
+    bool isAtEndOfPath();
 
     void setPath(std::vector<SDL_Point> path);
 
 private:
     std::vector<SDL_Point> _path;
     // What part of the projectile's path it is in
-    int _pathIndex = 0;
+    float _pathIndex = 0.f;
     // Number of milliseconds to wait before advancing to next point in path
-    int _moveSpeed = 10;
+    float _moveSpeed = 4.f;
     // How many milliseconds it's been since the last update to position
-    int _timeSinceLastMove = 0;
+    float _timeSinceLastMove = 0.f;
 };
 
 #endif

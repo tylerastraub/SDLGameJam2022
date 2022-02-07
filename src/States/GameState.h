@@ -5,6 +5,7 @@
 #include "Mouse.h"
 #include "Tilemap.h"
 #include "CollisionDetector.h"
+#include "Projectile.h"
 
 #include <memory>
 
@@ -25,8 +26,17 @@ private:
     std::unique_ptr<Grid> _grid = nullptr;
     CollisionDetector _collisionDetector;
 
+    // The path displayed for the guide line
+    std::vector<SDL_Point> _guideLineShotPath;
+    // The actual path the bullet will take
     std::vector<SDL_Point> _shotPath;
+    // How many bounces to display for guide line
+    int _numOfGuideLineBounces = 1;
+    // How many bounces the shot should actually do
     int _numOfBounces = 4;
+
+    Projectile* _shot = nullptr;
+    SDL_Point _shotStart = {336, 180};
 };
 
 #endif

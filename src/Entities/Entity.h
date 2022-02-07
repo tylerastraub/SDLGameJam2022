@@ -7,6 +7,7 @@
 
 class Entity {
 public:
+    Entity() = default;
     Entity(int x, int y);
     ~Entity() = default;
 
@@ -15,6 +16,8 @@ public:
 
     void setPosition(int x, int y);
     void setSpritesheet(Spritesheet spritesheet);
+
+    SDL_Point getPosition();
 
 private:
     SDL_Point _position = {0, 0};
