@@ -21,4 +21,6 @@ enum TileType {
     LONG_RIGHT_TRIANGLE_SOUTH = 9,
     // Long right triangle facing west
     LONG_RIGHT_TRIANGLE_WEST = 10,
+    // Level goal
+    GOAL_TILE = 11,
 };

@@ -20,6 +20,8 @@ public:
     void tick(float timescale) override;
     void render() override;
 
+    void addEntity(std::shared_ptr<Entity> entity);
+
 private:
     std::unique_ptr<Mouse> _mouse = nullptr;
     std::unique_ptr<Tilemap> _tilemap = nullptr;
@@ -37,8 +39,6 @@ private:
 
     Projectile* _shot = nullptr;
     SDL_Point _shotStart = {336, 180};
-
-    std::list<Entity*> _entityList;
 };
 
 #endif

@@ -13,6 +13,7 @@ public:
     void collisionEvent() override {};
     void tick(float timescale) override;
     void render(int xOffset, int yOffset) override;
+    void kill() override;
 
     bool isAtEndOfPath();
 

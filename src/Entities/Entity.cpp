@@ -1,7 +1,16 @@
 #include "Entity.h"
 
 Entity::Entity(int x, int y) {
+    setEntityType(EntityType::NONE);
     _position = {x, y};
+}
+
+void Entity::kill() {
+    setDead(true);
+}
+
+void Entity::setEntityType(EntityType type) {
+    _entityType = type;
 }
 
 void Entity::setPosition(int x, int y) {
@@ -12,7 +21,7 @@ void Entity::setPosition(int x, int y) {
     _collisionRect.y = y + _rectOffset.y;
 }
 
-void Entity::setSpritesheet(Spritesheet spritesheet) {
+void Entity::setSpritesheet(Spritesheet* spritesheet) {
     _entitySpritesheet = spritesheet;
 }
 
@@ -28,6 +37,14 @@ void Entity::setRectOffset(int xOffset, int yOffset) {
     _rectOffset = {xOffset, yOffset};
 }
 
+void Entity::setDead(bool isDead) {
+    _dead = isDead;
+}
+
+EntityType Entity::getEntityType() {
+    return _entityType;
+}
+
 SDL_Point Entity::getPosition() {
     return _position;
 }
@@ -38,4 +55,12 @@ SDL_Rect Entity::getCollisionRect() {
 
 SDL_Point Entity::getRectOffset() {
     return _rectOffset;
+}
+
+Spritesheet* Entity::getSpritesheet() {
+    return _entitySpritesheet;
+}
+
+bool Entity::isDead() {
+    return _dead;
 }

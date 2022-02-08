@@ -7,6 +7,7 @@
 #include "RightTriangle.h"
 #include "LongRightTriangle.h"
 #include "Diamond.h"
+#include "Entity.h"
 
 #include <list>
 #include <vector>
@@ -24,6 +25,7 @@ public:
     void addObject(std::shared_ptr<RightTriangle> triangle);
     void addObject(std::shared_ptr<LongRightTriangle> triangle);
     void addObject(std::shared_ptr<Diamond> diamond);
+    void addEntity(std::shared_ptr<Entity> entity);
 
     void setGridSize(int w, int h);
     void setTileset(Spritesheet* tileset);
@@ -33,7 +35,10 @@ public:
     int getTileSize();
     // Retrieve all edges stored in a grid cell
     std::list<Edge> getEdges(int x, int y);
+    // Get a list of all objects in grid
     std::list<std::shared_ptr<Object>> getObjects();
+    // Get a list of all entities in grid
+    std::list<std::shared_ptr<Entity>> getEntities();
     // Get all grid coordinates that intersect with a line
     std::vector<SDL_Point> getGridCellsIntersectingWithLine(const SDL_Point p1, const SDL_Point p2);
 
@@ -50,6 +55,8 @@ private:
     std::vector<std::list<Edge>> _edgeMap;
     // List of all objects in grid
     std::list<std::shared_ptr<Object>> _objectList;
+    // List of all entities in grid
+    std::list<std::shared_ptr<Entity>> _entityList;
 
     Spritesheet* _tileset = nullptr;
 

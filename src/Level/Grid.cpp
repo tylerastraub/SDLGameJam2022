@@ -60,6 +60,11 @@ void Grid::addObject(std::shared_ptr<Diamond> diamond) {
     _objectList.emplace_back(diamond);
 }
 
+void Grid::addEntity(std::shared_ptr<Entity> entity) {
+    entity->setSpritesheet(_tileset);
+    _entityList.emplace_back(entity);
+}
+
 void Grid::setGridSize(int w, int h) {
     _gridWidth = w;
     _gridHeight = h;
@@ -99,6 +104,10 @@ std::list<Edge> Grid::getEdges(int x, int y) {
 
 std::list<std::shared_ptr<Object>> Grid::getObjects() {
     return _objectList;
+}
+
+std::list<std::shared_ptr<Entity>> Grid::getEntities() {
+    return _entityList;
 }
 
 std::vector<SDL_Point> Grid::getGridCellsIntersectingWithLine(const SDL_Point p1, const SDL_Point p2) {

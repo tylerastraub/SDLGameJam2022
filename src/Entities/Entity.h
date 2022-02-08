@@ -5,6 +5,12 @@
 
 #include <SDL.h>
 
+enum EntityType {
+    NONE = 0,
+    PROJECTILE = 1,
+    GOAL_ENTITY = 2,
+};
+
 class Entity {
 public:
     Entity() = default;
@@ -15,18 +21,25 @@ public:
     virtual void collisionEvent() = 0;
     virtual void tick(float timescale) = 0;
     virtual void render(int xOffset, int yOffset) = 0;
+    virtual void kill();
 
+    void setEntityType(EntityType type);
     void setPosition(int x, int y);
-    void setSpritesheet(Spritesheet spritesheet);
+    void setSpritesheet(Spritesheet* spritesheet);
     void setCollisionRect(SDL_Rect rect);
     void setTextureRect(SDL_Rect rect);
     void setRectOffset(int xOffset, int yOffset);
+    void setDead(bool isDead);
 
+    EntityType getEntityType();
     SDL_Point getPosition();
     SDL_Rect getCollisionRect();
     SDL_Point getRectOffset();
+    Spritesheet* getSpritesheet();
+    bool isDead();
 
 private:
+    EntityType _entityType = EntityType::NONE;
     SDL_Point _position = {0, 0};
     // The rect used for collision calculations with other entities
     SDL_Rect _collisionRect = {0, 0, 0, 0};
@@ -37,7 +50,10 @@ private:
     // will automatically be at (24, 16);
     SDL_Point _rectOffset = {0, 0};
 
-    Spritesheet _entitySpritesheet;
+    Spritesheet* _entitySpritesheet;
+
+    // Whether or not the entity is dead. Usually used to signify entity is ready to be deleted
+    bool _dead = false;
 };
 
 #endif

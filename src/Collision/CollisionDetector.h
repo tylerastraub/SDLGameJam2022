@@ -29,7 +29,7 @@ public:
      * @param shot The projectile to check against all entities
      * @param entities The list of entities to be checked against the projectile
      */
-    void checkForShotEntityCollisions(Projectile* shot, std::list<Entity*> entities);
+    void checkForShotEntityCollisions(Projectile* shot, std::list<std::shared_ptr<Entity>> entities);
 
 private:
     /**

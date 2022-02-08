@@ -1,4 +1,5 @@
 #include "GameState.h"
+#include "Goal.h"
 
 #include <iostream>
 #include <chrono>
@@ -21,7 +22,7 @@ void GameState::init() {
         {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
         {1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 4, 0, 0, 1},
         {1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 0, 2, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 1},
+        {1, 0, 2, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 6, 0, 11, 0, 0, 0, 1},
         {1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
         {1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 1},
         {1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -75,14 +76,22 @@ void GameState::tick(float timescale) {
         _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _mouse->getMousePos(), _numOfGuideLineBounces);
     }
 
+    for(auto ent : _grid->getEntities()) {
+        ent->tick(timescale);
+        if(ent->getEntityType() == EntityType::GOAL_ENTITY) {
+            Goal g = *((Goal*) ent.get());
+            if(g.isHit() && _shot) _shot->kill();
+        }
+    }
+
     if(_shot) {
-        if(_shot->isAtEndOfPath()) {
+        if(_shot->isAtEndOfPath() || _shot->isDead()) {
             delete _shot;
             _shot = nullptr;
         }
         else {
             _shot->tick(timescale);
-            _collisionDetector.checkForShotEntityCollisions(_shot, _entityList);
+            _collisionDetector.checkForShotEntityCollisions(_shot, _grid->getEntities());
         }
     }
     if(_mouse->isLeftButtonDown()) {
@@ -115,18 +124,19 @@ void GameState::render() {
                 case TileType::LONG_RIGHT_TRIANGLE_EAST:
                 case TileType::LONG_RIGHT_TRIANGLE_SOUTH:
                 case TileType::LONG_RIGHT_TRIANGLE_WEST:
+                case TileType::GOAL_TILE:
                     SDL_SetRenderDrawColor(getRenderer(), 0x64, 0x63, 0x65, 0xFF);
                     SDL_RenderFillRect(getRenderer(), &tile);
-                    SDL_SetRenderDrawColor(getRenderer(), 0x21, 0x21, 0x23, 0xFF);
+                    SDL_SetRenderDrawColor(getRenderer(), 0x21, 0x21, 0x23, 0xAF);
                     // Top
                     SDL_RenderDrawLine(getRenderer(), tile.x, tile.y, tile.x + tile.w, tile.y);
                     // Left
                     SDL_RenderDrawLine(getRenderer(), tile.x, tile.y, tile.x, tile.y + tile.h);
-                    SDL_SetRenderDrawColor(getRenderer(), 0x35, 0x2b, 0x42, 0xFF);
+                    SDL_SetRenderDrawColor(getRenderer(), 0x35, 0x2b, 0x42, 0xAF);
                     // Right
-                    SDL_RenderDrawLine(getRenderer(), tile.x + tile.w, tile.y, tile.x + tile.w, tile.y + tile.h);
+                    SDL_RenderDrawLine(getRenderer(), tile.x + tile.w - 1, tile.y, tile.x + tile.w - 1, tile.y + tile.h - 1);
                     // Bottom
-                    SDL_RenderDrawLine(getRenderer(), tile.x, tile.y + tile.h, tile.x + tile.w, tile.y + tile.h);
+                    SDL_RenderDrawLine(getRenderer(), tile.x, tile.y + tile.h - 1, tile.x + tile.w - 1, tile.y + tile.h - 1);
                     break;
                 default:
                     SDL_SetRenderDrawColor(getRenderer(), 0xFF, 0x00, 0xFF, 0xFF);
@@ -142,8 +152,13 @@ void GameState::render() {
         }
     }
 
+    // Render objects
     for(auto obj : _grid->getObjects()) {
         obj->render(0, 0);
+    }
+    // Render entities
+    for(auto ent : _grid->getEntities()) {
+        ent->render(0, 0);
     }
 
     // Render shot path

@@ -3,6 +3,7 @@
 #include "Square.h"
 #include "Diamond.h"
 #include "LongRightTriangle.h"
+#include "Goal.h"
 
 #include <iostream>
 
@@ -122,6 +123,11 @@ Tilemap::Tilemap(Spritesheet* tileset, std::vector<std::vector<int>> tilemap) {
                         _tilemapGrid->addEdge({{x * TILE_SIZE + edge.p1.x, y * TILE_SIZE + edge.p1.y},
                             {x * TILE_SIZE + edge.p2.x, y * TILE_SIZE + edge.p2.y}});
                     }
+                    break;
+                }
+                case(TileType::GOAL_TILE): {
+                    std::shared_ptr<Goal> goal = std::make_shared<Goal>(x * TILE_SIZE, y * TILE_SIZE);
+                    _tilemapGrid->addEntity(goal);
                     break;
                 }
             }

@@ -3,6 +3,7 @@
 #include <iostream>
 
 Projectile::Projectile(int x, int y) {
+    setEntityType(EntityType::PROJECTILE);
     SDL_Rect collisionRect = {0, 0, 1, 1};
     SDL_Rect textureRect = {0, 0, 3, 3};
     setCollisionRect(collisionRect);
@@ -19,6 +20,10 @@ void Projectile::tick(float timescale) {
 
 void Projectile::render(int xOffset, int yOffset) {
 
+}
+
+void Projectile::kill() {
+    setDead(true);
 }
 
 bool Projectile::isAtEndOfPath() {

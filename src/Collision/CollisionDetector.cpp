@@ -84,7 +84,7 @@ std::vector<SDL_Point> CollisionDetector::calculateShotPath(Grid grid, SDL_Point
     return result;
 }
 
-void CollisionDetector::checkForShotEntityCollisions(Projectile* shot, std::list<Entity*> entities) {
+void CollisionDetector::checkForShotEntityCollisions(Projectile* shot, std::list<std::shared_ptr<Entity>> entities) {
     SDL_Rect shotRect = shot->getCollisionRect();
     bool collision = false;
     for(auto e : entities) {
