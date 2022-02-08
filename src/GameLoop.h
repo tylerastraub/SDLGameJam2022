@@ -2,6 +2,7 @@
 #define GAME_LOOP_H
 
 #include "State.h"
+#include "Spritesheet.h"
 
 #include <SDL.h>
 #include <memory>
@@ -32,6 +33,7 @@ private:
     bool _exitFlag = false;
 
     State* _currentState = nullptr;
+    std::unique_ptr<Spritesheet> _tileSpritesheet = nullptr;
 };
 
 #endif

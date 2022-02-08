@@ -14,90 +14,111 @@ Tilemap::Tilemap(int w, int h) {
     allocateTilemap(w, h);
 }
 
-Tilemap::Tilemap(std::vector<std::vector<int>> tilemap) {
+Tilemap::Tilemap(Spritesheet* tileset, std::vector<std::vector<int>> tilemap) {
     _tilemapHeight = tilemap.size();
     _tilemapWidth = tilemap[0].size();
     _tilemapGrid = std::make_unique<Grid>(TILE_SIZE, _tilemapWidth, _tilemapHeight);
+    _tilemapGrid->setTileset(tileset);
     for(int y = 0; y < _tilemapHeight; ++y) {
         std::vector<TileType> row;
         for(int x = 0; x < _tilemapWidth; ++x) {
             row.push_back((TileType) tilemap[y][x]);
             switch(tilemap[y][x]) {
                 case(TileType::SQUARE): {
-                    Square square;
-                    for(auto edge : square.getEdges()) {
+                    std::shared_ptr<Square> square = std::make_shared<Square>();
+                    square->setPosition(x * TILE_SIZE, y * TILE_SIZE);
+                    _tilemapGrid->addObject(square);
+                    for(auto edge : square->getEdges()) {
                         _tilemapGrid->addEdge({{x * TILE_SIZE + edge.p1.x, y * TILE_SIZE + edge.p1.y},
                             {x * TILE_SIZE + edge.p2.x, y * TILE_SIZE + edge.p2.y}});
                     }
                     break;
                 }
                 case(TileType::RIGHT_TRIANGLE_NORTH): {
-                    RightTriangle triangle(ObjectDirection::NORTH);
-                    for(auto edge : triangle.getEdges()) {
+                    std::shared_ptr<RightTriangle> triangle = std::make_shared<RightTriangle>(ObjectDirection::NORTH);
+                    triangle->setPosition(x * TILE_SIZE, y * TILE_SIZE);
+                    _tilemapGrid->addObject(triangle);
+                    for(auto edge : triangle->getEdges()) {
                         _tilemapGrid->addEdge({{x * TILE_SIZE + edge.p1.x, y * TILE_SIZE + edge.p1.y},
                             {x * TILE_SIZE + edge.p2.x, y * TILE_SIZE + edge.p2.y}});
                     }
                     break;
                 }
                 case(TileType::RIGHT_TRIANGLE_EAST): {
-                    RightTriangle triangle(ObjectDirection::EAST);
-                    for(auto edge : triangle.getEdges()) {
+                    std::shared_ptr<RightTriangle> triangle = std::make_shared<RightTriangle>(ObjectDirection::EAST);
+                    triangle->setPosition(x * TILE_SIZE, y * TILE_SIZE);
+                    _tilemapGrid->addObject(triangle);
+                    for(auto edge : triangle->getEdges()) {
                         _tilemapGrid->addEdge({{x * TILE_SIZE + edge.p1.x, y * TILE_SIZE + edge.p1.y},
                             {x * TILE_SIZE + edge.p2.x, y * TILE_SIZE + edge.p2.y}});
                     }
                     break;
                 }
                 case(TileType::RIGHT_TRIANGLE_SOUTH): {
-                    RightTriangle triangle(ObjectDirection::SOUTH);
-                    for(auto edge : triangle.getEdges()) {
+                    std::shared_ptr<RightTriangle> triangle = std::make_shared<RightTriangle>(ObjectDirection::SOUTH);
+                    triangle->setPosition(x * TILE_SIZE, y * TILE_SIZE);
+                    _tilemapGrid->addObject(triangle);
+                    for(auto edge : triangle->getEdges()) {
                         _tilemapGrid->addEdge({{x * TILE_SIZE + edge.p1.x, y * TILE_SIZE + edge.p1.y},
                             {x * TILE_SIZE + edge.p2.x, y * TILE_SIZE + edge.p2.y}});
                     }
                     break;
                 }
                 case(TileType::RIGHT_TRIANGLE_WEST): {
-                    RightTriangle triangle(ObjectDirection::WEST);
-                    for(auto edge : triangle.getEdges()) {
+                    std::shared_ptr<RightTriangle> triangle = std::make_shared<RightTriangle>(ObjectDirection::WEST);
+                    triangle->setPosition(x * TILE_SIZE, y * TILE_SIZE);
+                    _tilemapGrid->addObject(triangle);
+                    for(auto edge : triangle->getEdges()) {
                         _tilemapGrid->addEdge({{x * TILE_SIZE + edge.p1.x, y * TILE_SIZE + edge.p1.y},
                             {x * TILE_SIZE + edge.p2.x, y * TILE_SIZE + edge.p2.y}});
                     }
                     break;
                 }
                 case(TileType::DIAMOND): {
-                    Diamond diamond;
-                    for(auto edge : diamond.getEdges()) {
+                    std::shared_ptr<Diamond> diamond = std::make_shared<Diamond>();
+                    diamond->setPosition(x * TILE_SIZE, y * TILE_SIZE);
+                    _tilemapGrid->addObject(diamond);
+                    for(auto edge : diamond->getEdges()) {
                         _tilemapGrid->addEdge({{x * TILE_SIZE + edge.p1.x, y * TILE_SIZE + edge.p1.y},
                             {x * TILE_SIZE + edge.p2.x, y * TILE_SIZE + edge.p2.y}});
                     }
                     break;
                 }
                 case(TileType::LONG_RIGHT_TRIANGLE_NORTH): {
-                    LongRightTriangle triangle(ObjectDirection::NORTH);
-                    for(auto edge : triangle.getEdges()) {
+                    std::shared_ptr<LongRightTriangle> triangle = std::make_shared<LongRightTriangle>(ObjectDirection::NORTH);
+                    triangle->setPosition(x * TILE_SIZE, y * TILE_SIZE);
+                    _tilemapGrid->addObject(triangle);
+                    for(auto edge : triangle->getEdges()) {
                         _tilemapGrid->addEdge({{x * TILE_SIZE + edge.p1.x, y * TILE_SIZE + edge.p1.y},
                             {x * TILE_SIZE + edge.p2.x, y * TILE_SIZE + edge.p2.y}});
                     }
                     break;
                 }
                 case(TileType::LONG_RIGHT_TRIANGLE_EAST): {
-                    LongRightTriangle triangle(ObjectDirection::EAST);
-                    for(auto edge : triangle.getEdges()) {
+                    std::shared_ptr<LongRightTriangle> triangle = std::make_shared<LongRightTriangle>(ObjectDirection::EAST);
+                    triangle->setPosition(x * TILE_SIZE, y * TILE_SIZE);
+                    _tilemapGrid->addObject(triangle);
+                    for(auto edge : triangle->getEdges()) {
                         _tilemapGrid->addEdge({{x * TILE_SIZE + edge.p1.x, y * TILE_SIZE + edge.p1.y},
                             {x * TILE_SIZE + edge.p2.x, y * TILE_SIZE + edge.p2.y}});
                     }
                     break;
                 }
                 case(TileType::LONG_RIGHT_TRIANGLE_SOUTH): {
-                    LongRightTriangle triangle(ObjectDirection::SOUTH);
-                    for(auto edge : triangle.getEdges()) {
+                    std::shared_ptr<LongRightTriangle> triangle = std::make_shared<LongRightTriangle>(ObjectDirection::SOUTH);
+                    triangle->setPosition(x * TILE_SIZE, y * TILE_SIZE);
+                    _tilemapGrid->addObject(triangle);
+                    for(auto edge : triangle->getEdges()) {
                         _tilemapGrid->addEdge({{x * TILE_SIZE + edge.p1.x, y * TILE_SIZE + edge.p1.y},
                             {x * TILE_SIZE + edge.p2.x, y * TILE_SIZE + edge.p2.y}});
                     }
                     break;
                 }
                 case(TileType::LONG_RIGHT_TRIANGLE_WEST): {
-                    LongRightTriangle triangle(ObjectDirection::WEST);
-                    for(auto edge : triangle.getEdges()) {
+                    std::shared_ptr<LongRightTriangle> triangle = std::make_shared<LongRightTriangle>(ObjectDirection::WEST);
+                    triangle->setPosition(x * TILE_SIZE, y * TILE_SIZE);
+                    _tilemapGrid->addObject(triangle);
+                    for(auto edge : triangle->getEdges()) {
                         _tilemapGrid->addEdge({{x * TILE_SIZE + edge.p1.x, y * TILE_SIZE + edge.p1.y},
                             {x * TILE_SIZE + edge.p2.x, y * TILE_SIZE + edge.p2.y}});
                     }

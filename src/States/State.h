@@ -1,6 +1,8 @@
 #ifndef STATE_H
 #define STATE_H
 
+#include "Spritesheet.h"
+
 #include <SDL.h>
 
 class State {
@@ -18,9 +20,11 @@ public:
     void setGameSize(int w, int h);
     void setRenderSize(int w, int h);
     void setRenderer(SDL_Renderer* renderer);
+    void setTileset(Spritesheet* tileset);
 
     State* getNextState();
     SDL_Renderer* getRenderer();
+    Spritesheet* getTileset();
     SDL_Point getGameSize();
     SDL_Point getRenderSize();
 
@@ -29,6 +33,7 @@ protected:
 private:
     State* _nextState = nullptr;
     SDL_Renderer* _renderer = nullptr;
+    Spritesheet* _tileset = nullptr;
 
     SDL_Point _gameSize;
     SDL_Point _renderSize;

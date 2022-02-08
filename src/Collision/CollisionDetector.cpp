@@ -84,6 +84,19 @@ std::vector<SDL_Point> CollisionDetector::calculateShotPath(Grid grid, SDL_Point
     return result;
 }
 
+void CollisionDetector::checkForShotEntityCollisions(Projectile* shot, std::list<Entity*> entities) {
+    SDL_Rect shotRect = shot->getCollisionRect();
+    bool collision = false;
+    for(auto e : entities) {
+        SDL_Rect entityRect = e->getCollisionRect();
+        if(SDL_HasIntersection(&shotRect, &entityRect)) {
+            collision = true;
+            e->collisionEvent();
+        }
+    }
+    if(collision) shot->collisionEvent();
+}
+
 std::vector<SDL_Point> CollisionDetector::calculateLinePath(SDL_Point start, SDL_Point target) {
     std::vector<SDL_Point> points;
     int x0 = start.x;
@@ -122,7 +135,12 @@ std::vector<SDL_Point> CollisionDetector::calculateLinePath(SDL_Point start, SDL
         }
     }
 
-    if(points[0].x != start.x && points[0].y != start.y) std::reverse(points.begin(), points.end());
+    // Weird edge cases handled here
+    if((points[0].x != start.x && points[0].y != start.y) ||
+       (target.x - start.x < 0 && target.y == start.y) ||
+       (target.y - start.y < 0 && target.x == start.x)) {
+        std::reverse(points.begin(), points.end());
+    }
 
     return points;
 }

@@ -44,6 +44,7 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/Collision/CollisionDetector.cpp
     ${PROJECT_SOURCE_DIR}/src/Entities/Entity.cpp
     ${PROJECT_SOURCE_DIR}/src/Entities/Projectile.cpp
+    ${PROJECT_SOURCE_DIR}/src/Entities/Goal.cpp
     ${PROJECT_SOURCE_DIR}/src/Render/Spritesheet.cpp
     )
 

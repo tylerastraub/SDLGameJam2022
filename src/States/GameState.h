@@ -33,10 +33,12 @@ private:
     // How many bounces to display for guide line
     int _numOfGuideLineBounces = 1;
     // How many bounces the shot should actually do
-    int _numOfBounces = 4;
+    int _numOfBounces = 10;
 
     Projectile* _shot = nullptr;
     SDL_Point _shotStart = {336, 180};
+
+    std::list<Entity*> _entityList;
 };
 
 #endif

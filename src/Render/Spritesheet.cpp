@@ -42,14 +42,19 @@ bool Spritesheet::load(SDL_Renderer* renderer, std::string path) {
     return true;
 }
 
-void Spritesheet::render(int x, int y, SDL_RendererFlip flip, double angle) {
+void Spritesheet::render(int x, int y, SDL_RendererFlip flip, double angle, SDL_Point center) {
     SDL_Rect srcRect;
     srcRect.x = _tileIndex.x;
     srcRect.y = _tileIndex.y;
     srcRect.w = _tileSize.x;
     srcRect.h = _tileSize.y;
     SDL_Rect renderQuad = {x, y, _tileSize.x, _tileSize.y};
-    SDL_RenderCopyEx(_renderer, _texture, &srcRect, &renderQuad, angle, NULL, flip);
+    if(center.x == -1 && center.y == -1) {
+        SDL_RenderCopyEx(_renderer, _texture, &srcRect, &renderQuad, angle, NULL, flip);
+    }
+    else {
+        SDL_RenderCopyEx(_renderer, _texture, &srcRect, &renderQuad, angle, &center, flip);
+    }
 }
 
 int Spritesheet::getWidth() {

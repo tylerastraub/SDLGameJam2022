@@ -10,6 +10,7 @@ public:
     Projectile(int x, int y);
     ~Projectile() = default;
 
+    void collisionEvent() override {};
     void tick(float timescale) override;
     void render(int xOffset, int yOffset) override;
 

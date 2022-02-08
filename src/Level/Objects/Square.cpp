@@ -1,5 +1,7 @@
 #include "Square.h"
 
+#include <iostream>
+
 Square::Square() {
     // Top
     addEdge({{-1, -1}, {TILE_SIZE, -1}});
@@ -20,4 +22,14 @@ Square::Square(ObjectDirection dir) {
     addEdge({{-1, TILE_SIZE}, {TILE_SIZE, TILE_SIZE}});
     // Left
     addEdge({{-1, -1}, {-1, TILE_SIZE}});
+}
+
+void Square::render(int xOffset, int yOffset) {
+    Spritesheet* s = getSpritesheet();
+    s->setIsAnimated(false);
+    s->setIsLooped(false);
+    s->setTileWidth(32);
+    s->setTileHeight(32);
+    s->setTileIndex(0, 0);
+    s->render(getPosition().x + xOffset, getPosition().y + yOffset);
 }

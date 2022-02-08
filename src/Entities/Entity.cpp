@@ -16,6 +16,26 @@ void Entity::setSpritesheet(Spritesheet spritesheet) {
     _entitySpritesheet = spritesheet;
 }
 
+void Entity::setCollisionRect(SDL_Rect rect) {
+    _collisionRect = rect;
+}
+
+void Entity::setTextureRect(SDL_Rect rect) {
+    _textureRect = rect;
+}
+
+void Entity::setRectOffset(int xOffset, int yOffset) {
+    _rectOffset = {xOffset, yOffset};
+}
+
 SDL_Point Entity::getPosition() {
     return _position;
+}
+
+SDL_Rect Entity::getCollisionRect() {
+    return _collisionRect;
+}
+
+SDL_Point Entity::getRectOffset() {
+    return _rectOffset;
 }

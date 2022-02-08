@@ -3,6 +3,7 @@
 
 #include "Edge.h"
 #include "Grid.h"
+#include "Projectile.h"
 
 #include <vector>
 
@@ -21,6 +22,14 @@ public:
      * @return std::vector<SDL_Point> containing all points on said path
      */
     std::vector<SDL_Point> calculateShotPath(Grid grid, SDL_Point start, SDL_Point target, int numOfBounces);
+
+    /**
+     * @brief Checks for collisions between projectile and all entities. Calls method collisionEvent() for both if collision is found.
+     * 
+     * @param shot The projectile to check against all entities
+     * @param entities The list of entities to be checked against the projectile
+     */
+    void checkForShotEntityCollisions(Projectile* shot, std::list<Entity*> entities);
 
 private:
     /**

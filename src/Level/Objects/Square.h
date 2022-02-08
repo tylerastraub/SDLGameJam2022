@@ -10,7 +10,7 @@ public:
     ~Square() = default;
 
     void collisionEvent() override {};
-    void render(int xOffset, int yOffset) override {};
+    void render(int xOffset, int yOffset) override;
 
 private:
 

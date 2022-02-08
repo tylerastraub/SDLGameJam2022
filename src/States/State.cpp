@@ -16,12 +16,20 @@ void State::setRenderer(SDL_Renderer* renderer) {
     _renderer = renderer;
 }
 
+void State::setTileset(Spritesheet* tileset) {
+    _tileset = tileset;
+}
+
 State* State::getNextState() {
     return _nextState;
 }
 
 SDL_Renderer* State::getRenderer() {
     return _renderer;
+}
+
+Spritesheet* State::getTileset() {
+    return _tileset;
 }
 
 SDL_Point State::getGameSize() {

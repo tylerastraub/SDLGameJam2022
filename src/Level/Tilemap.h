@@ -13,7 +13,7 @@ public:
     Tilemap(int w, int h);
     // Constructor that allows tilemap to be generated based on vector of numbers. Useful for quickly creating
     // tilemaps for debugging purposes.
-    Tilemap(std::vector<std::vector<int>> tilemap);
+    Tilemap(Spritesheet* tileset, std::vector<std::vector<int>> tilemap);
     ~Tilemap() = default;
 
     void allocateTilemap(int w, int h);
@@ -33,6 +33,7 @@ private:
 
     std::vector<std::vector<TileType>> _tilemap;
     std::unique_ptr<Grid> _tilemapGrid = nullptr;
+    Spritesheet* _tileset = nullptr;
 };
 
 #endif

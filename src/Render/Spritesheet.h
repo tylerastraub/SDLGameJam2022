@@ -13,7 +13,7 @@ public:
     // be called manually.
     void free();
     bool load(SDL_Renderer* renderer, std::string path);
-    void render(int x, int y, SDL_RendererFlip flip = SDL_FLIP_NONE, double angle = 0.0);
+    void render(int x, int y, SDL_RendererFlip flip = SDL_FLIP_NONE, double angle = 0.0, SDL_Point center = {-1, -1});
 
     int getWidth();
     int getHeight();

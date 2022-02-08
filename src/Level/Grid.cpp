@@ -40,6 +40,26 @@ void Grid::addEdge(Edge edge) {
     }
 }
 
+void Grid::addObject(std::shared_ptr<Square> square) {
+    square->setObjectSpritesheet(_tileset);
+    _objectList.emplace_back(square);
+}
+
+void Grid::addObject(std::shared_ptr<RightTriangle> triangle) {
+    triangle->setObjectSpritesheet(_tileset);
+    _objectList.emplace_back(triangle);
+}
+
+void Grid::addObject(std::shared_ptr<LongRightTriangle> triangle) {
+    triangle->setObjectSpritesheet(_tileset);
+    _objectList.emplace_back(triangle);
+}
+
+void Grid::addObject(std::shared_ptr<Diamond> diamond) {
+    diamond->setObjectSpritesheet(_tileset);
+    _objectList.emplace_back(diamond);
+}
+
 void Grid::setGridSize(int w, int h) {
     _gridWidth = w;
     _gridHeight = h;
@@ -47,6 +67,13 @@ void Grid::setGridSize(int w, int h) {
         for(int i = 0; i < _gridWidth * _gridHeight; ++i) {
             _edgeMap.push_back(std::list<Edge>());
         }
+    }
+}
+
+void Grid::setTileset(Spritesheet* tileset) {
+    _tileset = tileset;
+    for(auto obj : _objectList) {
+        obj->setObjectSpritesheet(_tileset);
     }
 }
 
@@ -68,6 +95,10 @@ std::list<Edge> Grid::getEdges(int x, int y) {
         return std::list<Edge>();
     }
     return _edgeMap[y * _gridWidth + x];
+}
+
+std::list<std::shared_ptr<Object>> Grid::getObjects() {
+    return _objectList;
 }
 
 std::vector<SDL_Point> Grid::getGridCellsIntersectingWithLine(const SDL_Point p1, const SDL_Point p2) {

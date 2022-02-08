@@ -62,6 +62,7 @@ bool GameLoop::init() {
                         _currentState->setRenderer(_renderer);
                         _currentState->setGameSize(GAME_WIDTH, GAME_HEIGHT);
                         _currentState->setRenderSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+                        _currentState->setTileset(_tileSpritesheet.get());
                         _currentState->init();
                         std::cout << "Success!" << std::endl;
                         gameInitSuccessful = true;
@@ -75,6 +76,12 @@ bool GameLoop::init() {
 }
 
 bool GameLoop::loadResources() {
+    _tileSpritesheet = std::make_unique<Spritesheet>();
+    if(!_tileSpritesheet->load(_renderer, "res/tileset.png")) {
+        std::cout << "Error: failed to load 'res/tileset.png'!" << std::endl;
+        return false;
+    }
+
     return true;
 }
 
@@ -109,6 +116,7 @@ void GameLoop::startLoop() {
             _currentState->setRenderer(_renderer);
             _currentState->setGameSize(GAME_WIDTH, GAME_HEIGHT);
             _currentState->setRenderSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+            _currentState->setTileset(_tileSpritesheet.get());
             _currentState->init();
         }
 
@@ -138,6 +146,18 @@ void GameLoop::exit() {
     if(_renderer) {
         SDL_DestroyRenderer(_renderer);
         _renderer = nullptr;
+    }
+    if(_currentState->getNextState()) {
+        delete _currentState->getNextState();
+        _currentState->setNextState(nullptr);
+    }
+    if(_currentState) {
+        delete _currentState;
+        _currentState = nullptr;
+    }
+    if(_tileSpritesheet.get()) {
+        _tileSpritesheet->free();
+        _tileSpritesheet = nullptr;
     }
 
     IMG_Quit();
