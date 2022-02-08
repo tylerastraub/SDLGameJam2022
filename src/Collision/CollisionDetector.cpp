@@ -97,6 +97,22 @@ void CollisionDetector::checkForShotEntityCollisions(Projectile* shot, std::list
     if(collision) shot->collisionEvent();
 }
 
+void CollisionDetector::checkForClickableAction(Mouse* mouse, std::list<std::shared_ptr<Clickable>> clickables) {
+    for(auto c : clickables) {
+        SDL_Rect cRect = c->getClickRect();
+        SDL_Rect mouseRect = {mouse->getMouseX(), mouse->getMouseY(), 1, 1};
+        if(SDL_HasIntersection(&cRect, &mouseRect) && mouse->isLeftButtonDown()) {
+            c->onLeftMouseButtonDown();
+        }
+        else if(SDL_HasIntersection(&cRect, &mouseRect) && !mouse->isLeftButtonDown()) {
+            c->onLeftMouseButtonUp();
+        }
+        else {
+            c->setClicked(false);
+        }
+    }
+}
+
 std::vector<SDL_Point> CollisionDetector::calculateLinePath(SDL_Point start, SDL_Point target) {
     std::vector<SDL_Point> points;
     int x0 = start.x;

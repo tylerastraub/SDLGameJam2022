@@ -26,6 +26,7 @@ set(SOURCE_INCLUDES
     ${PROJECT_SOURCE_DIR}/src/Collision
     ${PROJECT_SOURCE_DIR}/src/Entities
     ${PROJECT_SOURCE_DIR}/src/Render
+    ${PROJECT_SOURCE_DIR}/src/Shop
     )
 set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/main.cpp
@@ -46,6 +47,9 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/Entities/Projectile.cpp
     ${PROJECT_SOURCE_DIR}/src/Entities/Goal.cpp
     ${PROJECT_SOURCE_DIR}/src/Render/Spritesheet.cpp
+    ${PROJECT_SOURCE_DIR}/src/Shop/Clickable.cpp
+    ${PROJECT_SOURCE_DIR}/src/Shop/Button.cpp
+    ${PROJECT_SOURCE_DIR}/src/Shop/ShopButton.cpp
     )
 
 if(WIN32)

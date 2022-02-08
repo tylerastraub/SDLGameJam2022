@@ -1,5 +1,6 @@
 #include "GameState.h"
 #include "Goal.h"
+#include "ShopButton.h"
 
 #include <iostream>
 #include <chrono>
@@ -7,6 +8,7 @@
 
 /**
  * TODO:
+ * - Fix bug where shot at top corner of right triangle crashes game
  * - Add shop
  * - Enable dragging/dropping pieces from shop to level
  * - Add reset button to reset level
@@ -17,11 +19,13 @@
  */
 
 void GameState::init() {
+    // Hardware init
     SDL_Point gameSize = getGameSize();
     SDL_Point renderSize = getRenderSize();
     _mouse = std::make_unique<Mouse>(
         (float) renderSize.x / (float) gameSize.x, (float) renderSize.y / (float) gameSize.y);
 
+    // Tilemap init
     std::vector<std::vector<int>> testMap = {
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
         {1, 3, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1},
@@ -40,8 +44,15 @@ void GameState::init() {
     _grid = std::make_unique<Grid>(_tilemap->getGrid());
     _tilemap->printTilemap();
 
+    // Shot init
     _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _mouse->getMousePos(), _numOfGuideLineBounces);
     _shotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _mouse->getMousePos(), _numOfBounces);
+
+    // Clickables init
+    std::shared_ptr<ShopButton> shopButton = std::make_shared<ShopButton>();
+    shopButton->setPosition(4, 16);
+    shopButton->setSpritesheet(getTileset());
+    _clickables.emplace_back(shopButton);
 }
 
 void GameState::handleInput() {}
@@ -100,13 +111,14 @@ void GameState::tick(float timescale) {
             _collisionDetector.checkForShotEntityCollisions(_shot, _grid->getEntities());
         }
     }
-    if(_mouse->isLeftButtonDown()) {
+    if(_mouse->isRightButtonDown()) {
         if(_shot) delete _shot;
         _shotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _mouse->getMousePos(), _numOfBounces);
         auto s = _shotPath.begin();
         _shot = new Projectile(s->x, s->y);
         _shot->setPath(_shotPath);
     }
+    _collisionDetector.checkForClickableAction(_mouse.get(), _clickables);
 }
 
 void GameState::render() {
@@ -170,17 +182,21 @@ void GameState::render() {
     }
 
     // Render shot path
-    // auto clock = std::chrono::high_resolution_clock::now();
     SDL_SetRenderDrawColor(getRenderer(), 0xFF, 0x00, 0x00, 0xAF);
     for(auto point : _guideLineShotPath) {
         SDL_RenderDrawPoint(getRenderer(), point.x + _renderOffset.x, point.y + _renderOffset.y);
     }
-    // std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - clock).count() << "ms" << std::endl;
 
+    // Render projectile
     if(_shot) {
         SDL_SetRenderDrawColor(getRenderer(), 0xFF, 0xFF, 0xFF, 0xFF);
         SDL_Rect r = {_shot->getPosition().x + _renderOffset.x, _shot->getPosition().y + _renderOffset.y, 3, 3};
         SDL_RenderDrawRect(getRenderer(), &r);
+    }
+
+    // Render clickables
+    for(auto c : _clickables) {
+        c->render(_renderOffset.x, _renderOffset.y);
     }
 
     SDL_RenderPresent(getRenderer());

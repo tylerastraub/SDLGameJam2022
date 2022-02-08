@@ -6,6 +6,7 @@
 #include "Tilemap.h"
 #include "CollisionDetector.h"
 #include "Projectile.h"
+#include "Clickable.h"
 
 #include <memory>
 
@@ -45,6 +46,9 @@ private:
 
     // Whether or not to render the grid underlay. Used for build mode
     bool _renderGrid = false;
+
+    // List of clickable objects. Include buttons, items, etc.
+    std::list<std::shared_ptr<Clickable>> _clickables;
 };
 
 #endif

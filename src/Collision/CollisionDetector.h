@@ -4,6 +4,8 @@
 #include "Edge.h"
 #include "Grid.h"
 #include "Projectile.h"
+#include "Mouse.h"
+#include "Clickable.h"
 
 #include <vector>
 
@@ -30,6 +32,8 @@ public:
      * @param entities The list of entities to be checked against the projectile
      */
     void checkForShotEntityCollisions(Projectile* shot, std::list<std::shared_ptr<Entity>> entities);
+
+    void checkForClickableAction(Mouse* mouse, std::list<std::shared_ptr<Clickable>> clickables);
 
 private:
     /**
