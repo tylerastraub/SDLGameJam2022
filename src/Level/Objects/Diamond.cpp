@@ -29,6 +29,10 @@ void Diamond::render(int xOffset, int yOffset) {
     s->setIsLooped(false);
     s->setTileWidth(32);
     s->setTileHeight(32);
+    if(drawShadows()) {
+        s->setTileIndex(4, 1);
+        s->render(getPosition().x + xOffset + 2, getPosition().y + yOffset + 2);
+    }
     s->setTileIndex(4, 0);
     s->render(getPosition().x + xOffset, getPosition().y + yOffset);
 }

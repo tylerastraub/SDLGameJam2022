@@ -12,6 +12,10 @@ void State::setRenderSize(int w, int h) {
     _renderSize = {w, h};
 }
 
+void State::setRenderScale(int scale) {
+    _renderScale = scale;
+}
+
 void State::setRenderer(SDL_Renderer* renderer) {
     _renderer = renderer;
 }
@@ -38,4 +42,8 @@ SDL_Point State::getGameSize() {
 
 SDL_Point State::getRenderSize() {
     return _renderSize;
+}
+
+int State::getRenderScale() {
+    return _renderScale;
 }

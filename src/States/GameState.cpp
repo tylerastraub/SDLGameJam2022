@@ -7,7 +7,13 @@
 
 /**
  * TODO:
- * - Add a couple more basic objects, then add essential game entities (exit, bullet, etc.)
+ * - Add shop
+ * - Enable dragging/dropping pieces from shop to level
+ * - Add reset button to reset level
+ * - Show colliding tiles while dragging
+ * - Add start entity
+ * - Add currency for shop
+ * - Add sounds?
  */
 
 void GameState::init() {
@@ -45,7 +51,7 @@ void GameState::handleMouseInput(SDL_Event e) {
         int x = 0;
         int y = 0;
         SDL_GetMouseState(&x, &y);
-        _mouse->setPos(x, y);
+        _mouse->setPos(x - _renderOffset.x * getRenderScale(), y - _renderOffset.y * getRenderScale());
         _mouse->setMouseMoved(true);
     }
     else if(e.type == SDL_MOUSEBUTTONDOWN) {
@@ -111,7 +117,7 @@ void GameState::render() {
     const int tileSize = _tilemap->getTileSize();
     for(int x = 0; x < _tilemap->getTilemapWidth(); ++x) {
         for(int y = 0; y < _tilemap->getTilemapHeight(); ++y) {
-            SDL_Rect tile = {x * tileSize, y * tileSize, tileSize, tileSize};
+            SDL_Rect tile = {x * tileSize + _renderOffset.x, y * tileSize + _renderOffset.y, tileSize, tileSize};
             switch(_tilemap->getTile(x, y)) {
                 case TileType::EMPTY:
                 case TileType::SQUARE:
@@ -127,16 +133,18 @@ void GameState::render() {
                 case TileType::GOAL_TILE:
                     SDL_SetRenderDrawColor(getRenderer(), 0x64, 0x63, 0x65, 0xFF);
                     SDL_RenderFillRect(getRenderer(), &tile);
-                    SDL_SetRenderDrawColor(getRenderer(), 0x21, 0x21, 0x23, 0xAF);
-                    // Top
-                    SDL_RenderDrawLine(getRenderer(), tile.x, tile.y, tile.x + tile.w, tile.y);
-                    // Left
-                    SDL_RenderDrawLine(getRenderer(), tile.x, tile.y, tile.x, tile.y + tile.h);
-                    SDL_SetRenderDrawColor(getRenderer(), 0x35, 0x2b, 0x42, 0xAF);
-                    // Right
-                    SDL_RenderDrawLine(getRenderer(), tile.x + tile.w - 1, tile.y, tile.x + tile.w - 1, tile.y + tile.h - 1);
-                    // Bottom
-                    SDL_RenderDrawLine(getRenderer(), tile.x, tile.y + tile.h - 1, tile.x + tile.w - 1, tile.y + tile.h - 1);
+                    if(_renderGrid) {
+                        SDL_SetRenderDrawColor(getRenderer(), 0x21, 0x21, 0x23, 0xAF);
+                        // Top
+                        SDL_RenderDrawLine(getRenderer(), tile.x, tile.y, tile.x + tile.w, tile.y);
+                        // Left
+                        SDL_RenderDrawLine(getRenderer(), tile.x, tile.y, tile.x, tile.y + tile.h);
+                        SDL_SetRenderDrawColor(getRenderer(), 0x35, 0x2b, 0x42, 0xAF);
+                        // Right
+                        SDL_RenderDrawLine(getRenderer(), tile.x + tile.w - 1, tile.y, tile.x + tile.w - 1, tile.y + tile.h - 1);
+                        // Bottom
+                        SDL_RenderDrawLine(getRenderer(), tile.x, tile.y + tile.h - 1, tile.x + tile.w - 1, tile.y + tile.h - 1);
+                    }
                     break;
                 default:
                     SDL_SetRenderDrawColor(getRenderer(), 0xFF, 0x00, 0xFF, 0xFF);
@@ -154,24 +162,24 @@ void GameState::render() {
 
     // Render objects
     for(auto obj : _grid->getObjects()) {
-        obj->render(0, 0);
+        obj->render(_renderOffset.x, _renderOffset.y);
     }
     // Render entities
     for(auto ent : _grid->getEntities()) {
-        ent->render(0, 0);
+        ent->render(_renderOffset.x, _renderOffset.y);
     }
 
     // Render shot path
     // auto clock = std::chrono::high_resolution_clock::now();
     SDL_SetRenderDrawColor(getRenderer(), 0xFF, 0x00, 0x00, 0xAF);
     for(auto point : _guideLineShotPath) {
-        SDL_RenderDrawPoint(getRenderer(), point.x, point.y);
+        SDL_RenderDrawPoint(getRenderer(), point.x + _renderOffset.x, point.y + _renderOffset.y);
     }
     // std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - clock).count() << "ms" << std::endl;
 
     if(_shot) {
         SDL_SetRenderDrawColor(getRenderer(), 0xFF, 0xFF, 0xFF, 0xFF);
-        SDL_Rect r = {_shot->getPosition().x, _shot->getPosition().y, 3, 3};
+        SDL_Rect r = {_shot->getPosition().x + _renderOffset.x, _shot->getPosition().y + _renderOffset.y, 3, 3};
         SDL_RenderDrawRect(getRenderer(), &r);
     }
 

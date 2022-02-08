@@ -26,11 +26,13 @@ public:
     void setPosition(int x, int y);
     void setDirection(ObjectDirection dir);
     void setObjectSpritesheet(Spritesheet* spritesheet);
+    void setDrawShadows(bool drawShadows);
 
     SDL_Point getPosition();
     std::list<Edge> getEdges();
     ObjectDirection getDirection();
     Spritesheet* getSpritesheet();
+    bool drawShadows();
 
 protected:
     void addEdge(Edge edge);
@@ -44,6 +46,8 @@ private:
     
     ObjectDirection _direction = ObjectDirection::NORTH;
     Spritesheet* _objectSpritesheet;
+
+    bool _drawShadows = true;
 
 };
 

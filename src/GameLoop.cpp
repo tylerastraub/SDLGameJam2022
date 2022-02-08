@@ -20,7 +20,7 @@ bool GameLoop::init() {
 	else
 	{
 		// Create window
-		_window = SDL_CreateWindow("SDL Game Jam 2022", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+		_window = SDL_CreateWindow("SDL Game Jam 2022", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, GAME_WIDTH * RENDER_SCALE, GAME_HEIGHT * RENDER_SCALE, SDL_WINDOW_BORDERLESS);
 		if(_window == nullptr)
 		{
 			std::cout << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
@@ -61,7 +61,8 @@ bool GameLoop::init() {
                         _currentState = new GameState();
                         _currentState->setRenderer(_renderer);
                         _currentState->setGameSize(GAME_WIDTH, GAME_HEIGHT);
-                        _currentState->setRenderSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+                        _currentState->setRenderSize(GAME_WIDTH * RENDER_SCALE, GAME_HEIGHT * RENDER_SCALE);
+                        _currentState->setRenderScale(RENDER_SCALE);
                         _currentState->setTileset(_tileSpritesheet.get());
                         _currentState->init();
                         std::cout << "Success!" << std::endl;
@@ -115,7 +116,8 @@ void GameLoop::startLoop() {
             _currentState = tempState;
             _currentState->setRenderer(_renderer);
             _currentState->setGameSize(GAME_WIDTH, GAME_HEIGHT);
-            _currentState->setRenderSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+            _currentState->setRenderSize(GAME_WIDTH * RENDER_SCALE, GAME_HEIGHT * RENDER_SCALE);
+            _currentState->setRenderScale(RENDER_SCALE);
             _currentState->setTileset(_tileSpritesheet.get());
             _currentState->init();
         }

@@ -19,6 +19,7 @@ public:
     void setNextState(State* nextState);
     void setGameSize(int w, int h);
     void setRenderSize(int w, int h);
+    void setRenderScale(int scale);
     void setRenderer(SDL_Renderer* renderer);
     void setTileset(Spritesheet* tileset);
 
@@ -27,6 +28,7 @@ public:
     Spritesheet* getTileset();
     SDL_Point getGameSize();
     SDL_Point getRenderSize();
+    int getRenderScale();
 
 protected:
 
@@ -37,6 +39,7 @@ private:
 
     SDL_Point _gameSize;
     SDL_Point _renderSize;
+    int _renderScale;
 };
 
 #endif

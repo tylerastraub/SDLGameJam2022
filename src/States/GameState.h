@@ -39,6 +39,12 @@ private:
 
     Projectile* _shot = nullptr;
     SDL_Point _shotStart = {336, 180};
+
+    // Offset used for rendering. Shifts entire screen
+    SDL_Point _renderOffset = {0, -12};
+
+    // Whether or not to render the grid underlay. Used for build mode
+    bool _renderGrid = false;
 };
 
 #endif

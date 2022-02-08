@@ -59,18 +59,37 @@ void RightTriangle::render(int xOffset, int yOffset) {
     s->setIsLooped(false);
     s->setTileWidth(32);
     s->setTileHeight(32);
-    s->setTileIndex(1, 0);
     switch(getDirection()) {
         case(ObjectDirection::NORTH):
+            if(drawShadows()) {
+                s->setTileIndex(1, 1);
+                s->render(getPosition().x + xOffset + 2, getPosition().y + yOffset + 2);
+            }
+            s->setTileIndex(1, 0);
             s->render(getPosition().x + xOffset, getPosition().y + yOffset);
             break;
         case(ObjectDirection::EAST):
+            if(drawShadows()) {
+                s->setTileIndex(1, 1);
+                s->render(getPosition().x + xOffset + 2, getPosition().y + yOffset + 2, SDL_FLIP_NONE, 90.0);
+            }
+            s->setTileIndex(1, 0);
             s->render(getPosition().x + xOffset, getPosition().y + yOffset, SDL_FLIP_NONE, 90.0);
             break;
         case(ObjectDirection::SOUTH):
+            if(drawShadows()) {
+                s->setTileIndex(1, 1);
+                s->render(getPosition().x + xOffset + 2, getPosition().y + yOffset + 2, SDL_FLIP_NONE, 180.0);
+            }
+            s->setTileIndex(1, 0);
             s->render(getPosition().x + xOffset, getPosition().y + yOffset, SDL_FLIP_NONE, 180.0);
             break;
         case(ObjectDirection::WEST):
+            if(drawShadows()) {
+                s->setTileIndex(1, 1);
+                s->render(getPosition().x + xOffset + 2, getPosition().y + yOffset + 2, SDL_FLIP_NONE, 270.0);
+            }
+            s->setTileIndex(1, 0);
             s->render(getPosition().x + xOffset, getPosition().y + yOffset, SDL_FLIP_NONE, 270.0);
             break;
     }

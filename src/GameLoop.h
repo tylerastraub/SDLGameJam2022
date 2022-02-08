@@ -25,10 +25,8 @@ private:
     const int GAME_WIDTH = 640;
     // The logical height of the game
     const int GAME_HEIGHT = 360;
-    // The width of the screen. Note that this should be scaled based on GAME_WIDTH
-    const int SCREEN_WIDTH = 1280;
-    // The height of the screen. Note that this should be scaled based on GAME_HEIGHT
-    const int SCREEN_HEIGHT = 720;
+    // The render scale for the window
+    const int RENDER_SCALE = 4;
 
     bool _exitFlag = false;
 

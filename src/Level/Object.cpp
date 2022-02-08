@@ -16,6 +16,10 @@ void Object::setObjectSpritesheet(Spritesheet* spritesheet) {
     _objectSpritesheet = spritesheet;
 }
 
+void Object::setDrawShadows(bool drawShadows) {
+    _drawShadows = drawShadows;
+}
+
 SDL_Point Object::getPosition() {
     return _position;
 }
@@ -30,6 +34,10 @@ ObjectDirection Object::getDirection() {
 
 Spritesheet* Object::getSpritesheet() {
     return _objectSpritesheet;
+}
+
+bool Object::drawShadows() {
+    return _drawShadows;
 }
 
 void Object::addEdge(Edge edge) {

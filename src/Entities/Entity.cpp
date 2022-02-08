@@ -41,6 +41,10 @@ void Entity::setDead(bool isDead) {
     _dead = isDead;
 }
 
+void Entity::setDrawShadows(bool drawShadows) {
+    _drawShadows = drawShadows;
+}
+
 EntityType Entity::getEntityType() {
     return _entityType;
 }
@@ -63,4 +67,8 @@ Spritesheet* Entity::getSpritesheet() {
 
 bool Entity::isDead() {
     return _dead;
+}
+
+bool Entity::drawShadows() {
+    return _drawShadows;
 }

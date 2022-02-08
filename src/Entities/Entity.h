@@ -30,6 +30,7 @@ public:
     void setTextureRect(SDL_Rect rect);
     void setRectOffset(int xOffset, int yOffset);
     void setDead(bool isDead);
+    void setDrawShadows(bool drawShadows);
 
     EntityType getEntityType();
     SDL_Point getPosition();
@@ -37,6 +38,7 @@ public:
     SDL_Point getRectOffset();
     Spritesheet* getSpritesheet();
     bool isDead();
+    bool drawShadows();
 
 private:
     EntityType _entityType = EntityType::NONE;
@@ -54,6 +56,8 @@ private:
 
     // Whether or not the entity is dead. Usually used to signify entity is ready to be deleted
     bool _dead = false;
+
+    bool _drawShadows = true;
 };
 
 #endif
