@@ -7,7 +7,14 @@ ShopButton::ShopButton() {
 }
 
 void ShopButton::onClick() {
-    std::cout << "Shop button clicked!" << std::endl;
+    if(_shop->isOpen()) {
+        _shop->setOpen(false);
+        setPosition(getPosition().x - _shop->getWidth(), getPosition().y);
+    }
+    else {
+        _shop->setOpen(true);
+        setPosition(getPosition().x + _shop->getWidth(), getPosition().y);
+    }
 }
 
 void ShopButton::render(int xOffset, int yOffset) {
@@ -16,8 +23,10 @@ void ShopButton::render(int xOffset, int yOffset) {
     s->setIsLooped(false);
     s->setTileWidth(16);
     s->setTileHeight(16);
-    SDL_Point index = {10, 2}; 
-    index.x = (isClicked()) ? 12 : 10;
+    s->setRenderWidth(16);
+    s->setRenderHeight(16);
+    SDL_Point index = {5, 1}; 
+    index.x = (isClicked()) ? 6 : 5;
     s->setTileIndex(index.x, index.y);
     s->render(getPosition().x + xOffset, getPosition().y + yOffset);
 }

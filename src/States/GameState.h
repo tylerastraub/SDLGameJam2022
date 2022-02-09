@@ -7,6 +7,7 @@
 #include "CollisionDetector.h"
 #include "Projectile.h"
 #include "Clickable.h"
+#include "Shop.h"
 
 #include <memory>
 
@@ -49,6 +50,8 @@ private:
 
     // List of clickable objects. Include buttons, items, etc.
     std::list<std::shared_ptr<Clickable>> _clickables;
+    // The shop object
+    std::unique_ptr<Shop> _shop = nullptr;
 };
 
 #endif

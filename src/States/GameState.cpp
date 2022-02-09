@@ -48,10 +48,15 @@ void GameState::init() {
     _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _mouse->getMousePos(), _numOfGuideLineBounces);
     _shotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _mouse->getMousePos(), _numOfBounces);
 
+    // Shop init
+    _shop = std::make_unique<Shop>();
+    _shop->setSpritesheet(getTileset());
+
     // Clickables init
     std::shared_ptr<ShopButton> shopButton = std::make_shared<ShopButton>();
     shopButton->setPosition(4, 16);
     shopButton->setSpritesheet(getTileset());
+    shopButton->setShop(_shop.get());
     _clickables.emplace_back(shopButton);
 }
 
@@ -192,6 +197,11 @@ void GameState::render() {
         SDL_SetRenderDrawColor(getRenderer(), 0xFF, 0xFF, 0xFF, 0xFF);
         SDL_Rect r = {_shot->getPosition().x + _renderOffset.x, _shot->getPosition().y + _renderOffset.y, 3, 3};
         SDL_RenderDrawRect(getRenderer(), &r);
+    }
+
+    // Render shop
+    if(_shop->isOpen()) {
+        _shop->render(getRenderer(), _renderOffset.x, _renderOffset.y);
     }
 
     // Render clickables

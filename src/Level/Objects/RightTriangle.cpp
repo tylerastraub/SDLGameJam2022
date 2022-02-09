@@ -57,8 +57,10 @@ void RightTriangle::render(int xOffset, int yOffset) {
     Spritesheet* s = getSpritesheet();
     s->setIsAnimated(false);
     s->setIsLooped(false);
-    s->setTileWidth(32);
-    s->setTileHeight(32);
+    s->setTileWidth(getNaturalSize().x);
+    s->setTileHeight(getNaturalSize().y);
+    s->setRenderWidth(getRenderSize().x);
+    s->setRenderHeight(getRenderSize().y);
     switch(getDirection()) {
         case(ObjectDirection::NORTH):
             if(drawShadows()) {

@@ -27,8 +27,10 @@ void Diamond::render(int xOffset, int yOffset) {
     Spritesheet* s = getSpritesheet();
     s->setIsAnimated(false);
     s->setIsLooped(false);
-    s->setTileWidth(32);
-    s->setTileHeight(32);
+    s->setTileWidth(getNaturalSize().x);
+    s->setTileHeight(getNaturalSize().y);
+    s->setRenderWidth(getRenderSize().x);
+    s->setRenderHeight(getRenderSize().y);
     if(drawShadows()) {
         s->setTileIndex(4, 1);
         s->render(getPosition().x + xOffset + 2, getPosition().y + yOffset + 2);

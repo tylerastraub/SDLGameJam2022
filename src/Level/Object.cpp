@@ -20,6 +20,14 @@ void Object::setDrawShadows(bool drawShadows) {
     _drawShadows = drawShadows;
 }
 
+void Object::setNaturalSize(int w, int h) {
+    _naturalSize = {w, h};
+}
+
+void Object::setRenderSize(int w, int h) {
+    _renderSize = {w, h};
+}
+
 SDL_Point Object::getPosition() {
     return _position;
 }
@@ -38,6 +46,14 @@ Spritesheet* Object::getSpritesheet() {
 
 bool Object::drawShadows() {
     return _drawShadows;
+}
+
+SDL_Point Object::getNaturalSize() {
+    return _naturalSize;
+}
+
+SDL_Point Object::getRenderSize() {
+    return _renderSize;
 }
 
 void Object::addEdge(Edge edge) {

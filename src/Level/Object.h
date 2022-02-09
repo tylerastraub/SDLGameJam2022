@@ -27,12 +27,16 @@ public:
     void setDirection(ObjectDirection dir);
     void setObjectSpritesheet(Spritesheet* spritesheet);
     void setDrawShadows(bool drawShadows);
+    void setNaturalSize(int w, int h);
+    void setRenderSize(int w, int h);
 
     SDL_Point getPosition();
     std::list<Edge> getEdges();
     ObjectDirection getDirection();
     Spritesheet* getSpritesheet();
     bool drawShadows();
+    SDL_Point getNaturalSize();
+    SDL_Point getRenderSize();
 
 protected:
     void addEdge(Edge edge);
@@ -48,6 +52,8 @@ private:
     Spritesheet* _objectSpritesheet;
 
     bool _drawShadows = true;
+    SDL_Point _naturalSize = {32, 32};
+    SDL_Point _renderSize = {32, 32};
 
 };
 

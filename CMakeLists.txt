@@ -50,6 +50,7 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/Shop/Clickable.cpp
     ${PROJECT_SOURCE_DIR}/src/Shop/Button.cpp
     ${PROJECT_SOURCE_DIR}/src/Shop/ShopButton.cpp
+    ${PROJECT_SOURCE_DIR}/src/Shop/Shop.cpp
     )
 
 if(WIN32)

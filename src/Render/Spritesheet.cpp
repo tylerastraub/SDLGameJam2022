@@ -48,7 +48,7 @@ void Spritesheet::render(int x, int y, SDL_RendererFlip flip, double angle, SDL_
     srcRect.y = _tileIndex.y;
     srcRect.w = _tileSize.x;
     srcRect.h = _tileSize.y;
-    SDL_Rect renderQuad = {x, y, _tileSize.x, _tileSize.y};
+    SDL_Rect renderQuad = {x, y, _renderSize.x, _renderSize.y};
     if(center.x == -1 && center.y == -1) {
         SDL_RenderCopyEx(_renderer, _texture, &srcRect, &renderQuad, angle, NULL, flip);
     }
@@ -90,10 +90,10 @@ int Spritesheet::getMsBetweenFrames() {
 }
 
 void Spritesheet::setTileIndex(int x, int y) {
-    if(x >= 0 && x < _size.x / _tileSize.x &&
-       y >= 0 && y < _size.y / _tileSize.y) {
-        _tileIndex.x = x * _tileSize.x;
-        _tileIndex.y = y * _tileSize.y;
+    if(x >= 0 && x < _size.x / INDEX_SIZE &&
+       y >= 0 && y < _size.y / INDEX_SIZE) {
+        _tileIndex.x = x * INDEX_SIZE;
+        _tileIndex.y = y * INDEX_SIZE;
     }
     else {
         std::cout << "Error: Invalid tile index of (" << x << ", " << y << ")" << std::endl; 
@@ -108,6 +108,14 @@ void Spritesheet::setTileWidth(int w) {
 
 void Spritesheet::setTileHeight(int h) {
     _tileSize.y = h;
+}
+
+void Spritesheet::setRenderWidth(int w) {
+    _renderSize.x = w;
+}
+
+void Spritesheet::setRenderHeight(int h) {
+    _renderSize.y = h;
 }
 
 void Spritesheet::setIsAnimated(bool isAnimated) {

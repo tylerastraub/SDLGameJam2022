@@ -27,13 +27,17 @@ public:
     void setTileIndex(int x, int y);
     void setTileWidth(int w);
     void setTileHeight(int h);
+    void setRenderWidth(int w);
+    void setRenderHeight(int h);
     void setIsAnimated(bool isAnimated);
     void setIsLooped(bool isLooped);
     void setNumOfFrames(int frames);
     void setMsBetweenFrames(int ms);
 
 private:
+    const int INDEX_SIZE = 32;
     SDL_Point _tileSize = {32, 32};
+    SDL_Point _renderSize = {32, 32};
     SDL_Point _size = {0, 0};
     SDL_Renderer* _renderer = nullptr;
     SDL_Texture* _texture = nullptr;
