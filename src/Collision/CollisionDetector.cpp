@@ -57,6 +57,7 @@ std::vector<SDL_Point> CollisionDetector::calculateShotPath(Grid grid, SDL_Point
             for(; it != collisionPoints.end(); ++it) {
                 float newDistance = std::hypot(currentLineStart.x - it->second.x, currentLineStart.y - it->second.y);
                 if(newDistance < distance) {
+                    distance = newDistance;
                     collidedEdge = it->first;
                     p = it->second;
                 }
@@ -227,6 +228,7 @@ SDL_Point CollisionDetector::calculateNextTargetAfterBounce(Grid grid, SDL_Point
     SDL_Point potNormalVec1 = {(int) (edgeDY * -1.f), (int) edgeDX};
     SDL_Point potNormalVec2 = {(int) edgeDY, (int) (edgeDX * -1.f)};
     SDL_Point normalVecOffset, vecComponentU, vecComponentW, newVec;
+    float magnitude = 0.f;
     if(std::hypot(shotDX + potNormalVec1.x, shotDY + potNormalVec1.y)
         < std::hypot(shotDX + potNormalVec2.x, shotDY + potNormalVec2.y)) {
         normalVecOffset = potNormalVec1;
@@ -242,7 +244,8 @@ SDL_Point CollisionDetector::calculateNextTargetAfterBounce(Grid grid, SDL_Point
     vecComponentW = {shotDX - vecComponentU.x, shotDY - vecComponentU.y};
     newVec = {vecComponentW.x - vecComponentU.x, vecComponentW.y - vecComponentU.y};
 
-    float magnitude = (float) grid.getGridWidth() * grid.getTileSize() / std::hypot(newVec.x, newVec.y);
+
+    if(newVec.x != 0 && newVec.y != 0) magnitude = (float) grid.getGridWidth() * grid.getTileSize() / std::hypot(newVec.x, newVec.y);
     return {(int) (shotEnd.x + newVec.x * magnitude), (int) (shotEnd.y + newVec.y * magnitude)};
 }
 

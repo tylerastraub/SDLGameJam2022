@@ -8,13 +8,12 @@
 
 /**
  * TODO:
- * - Fix bug where shot at top corner of right triangle crashes game
- * - Fix bug where certain edges just... don't work sometimes? Such as when 2 long right triangles are adjacent
  * - Add ability to rotate objects before placing
  * - Add reset button to reset level
  * - Show colliding tiles while dragging (must fix for long right triangle)
  * - Update tilemap based on new objects added
  * - Add start entity
+ * - Add level class that loads levels from file and creates proper tilemap with start, goal, etc...
  * - Add sounds?
  */
 
@@ -151,6 +150,7 @@ void GameState::tick(float timescale) {
                      {_currentObjSelection->getPosition().x + edge.p2.x, _currentObjSelection->getPosition().y + edge.p2.y}});
             }
             _currentObjSelection = nullptr;
+            _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _mouse->getMousePos(), _numOfGuideLineBounces);
         }
         else {
             _currentObjSelection->setPosition(_mouse->getMouseX() - _grid->getTileSize() / 2,
