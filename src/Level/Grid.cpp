@@ -40,6 +40,11 @@ void Grid::addEdge(Edge edge) {
     }
 }
 
+void Grid::addObject(std::shared_ptr<Object> obj) {
+    obj->setObjectSpritesheet(_tileset);
+    _objectList.emplace_back(obj);
+}
+
 void Grid::addObject(std::shared_ptr<Square> square) {
     square->setObjectSpritesheet(_tileset);
     _objectList.emplace_back(square);
@@ -96,7 +101,6 @@ int Grid::getTileSize() {
 
 std::list<Edge> Grid::getEdges(int x, int y) {
     if(x >= _gridWidth || x < 0 || y >= _gridHeight || y < 0) {
-        // std::cout << "Error: invalid grid coordinates at (" << x << ", " << y << ")" << std::endl;
         return std::list<Edge>();
     }
     return _edgeMap[y * _gridWidth + x];
@@ -125,7 +129,6 @@ std::vector<SDL_Point> Grid::getGridCellsIntersectingWithLine(const SDL_Point p1
     float tDeltaY = (float) stepY / (float) (p2.y - p1.y) * (float) _tileSize;
     float tMaxX = tDeltaX * getFrac((float) p1.x / (float) _tileSize * stepX);
     float tMaxY = tDeltaY * getFrac((float) p1.y / (float) _tileSize * stepY);
-    // std::cout << "stepX: " << stepX <<", stepY: " << stepY << ", tMaxX: " << tMaxX << ", tMaxY: " << tMaxY << ", tDeltaX: " << tDeltaX << ", tDeltaY: " << tDeltaY << std::endl;
     do {
         if(tMaxX < tMaxY) {
             tMaxX += tDeltaX;

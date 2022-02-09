@@ -13,6 +13,14 @@ enum ObjectDirection {
     WEST = 3
 };
 
+enum ObjectType {
+    OBJECT_NONE = 0,
+    OBJECT_SQUARE = 1,
+    OBJECT_RIGHT_TRIANGLE = 2,
+    OBJECT_LONG_RIGHT_TRIANGLE = 3,
+    OBJECT_DIAMOND = 4,
+};
+
 class Object {
 public:
     Object() = default;
@@ -29,6 +37,8 @@ public:
     void setDrawShadows(bool drawShadows);
     void setNaturalSize(int w, int h);
     void setRenderSize(int w, int h);
+    void setMoveable(bool moveable);
+    void setInGrid(bool isInGrid);
 
     SDL_Point getPosition();
     std::list<Edge> getEdges();
@@ -37,6 +47,8 @@ public:
     bool drawShadows();
     SDL_Point getNaturalSize();
     SDL_Point getRenderSize();
+    bool isMoveable();
+    bool isInGrid();
 
 protected:
     void addEdge(Edge edge);
@@ -54,6 +66,9 @@ private:
     bool _drawShadows = true;
     SDL_Point _naturalSize = {32, 32};
     SDL_Point _renderSize = {32, 32};
+
+    bool _isMoveable = false;
+    bool _isInGrid = true;
 
 };
 

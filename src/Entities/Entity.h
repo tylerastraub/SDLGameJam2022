@@ -6,7 +6,7 @@
 #include <SDL.h>
 
 enum EntityType {
-    NONE = 0,
+    ENTITY_NONE = 0,
     PROJECTILE = 1,
     GOAL_ENTITY = 2,
 };
@@ -41,7 +41,7 @@ public:
     bool drawShadows();
 
 private:
-    EntityType _entityType = EntityType::NONE;
+    EntityType _entityType = EntityType::ENTITY_NONE;
     SDL_Point _position = {0, 0};
     // The rect used for collision calculations with other entities
     SDL_Rect _collisionRect = {0, 0, 0, 0};

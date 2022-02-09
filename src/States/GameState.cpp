@@ -9,12 +9,12 @@
 /**
  * TODO:
  * - Fix bug where shot at top corner of right triangle crashes game
- * - Add shop
- * - Enable dragging/dropping pieces from shop to level
+ * - Fix bug where certain edges just... don't work sometimes? Such as when 2 long right triangles are adjacent
+ * - Add ability to rotate objects before placing
  * - Add reset button to reset level
- * - Show colliding tiles while dragging
+ * - Show colliding tiles while dragging (must fix for long right triangle)
+ * - Update tilemap based on new objects added
  * - Add start entity
- * - Add currency for shop
  * - Add sounds?
  */
 
@@ -124,6 +124,41 @@ void GameState::tick(float timescale) {
         _shot->setPath(_shotPath);
     }
     _collisionDetector.checkForClickableAction(_mouse.get(), _clickables);
+    _collisionDetector.checkForClickableAction(_mouse.get(), _shop->getObjectBuyButtons());
+    for(auto bb : _shop->getObjectBuyButtons()) {
+        auto oc = (ObjectClickable*) bb.get();
+        std::shared_ptr<Object> obj = oc->getObject();
+        if(obj != nullptr) {
+            if(!obj->isInGrid()) {
+                _grid->addObject(oc->getObject());
+                obj->setInGrid(true);
+                obj->setObjectSpritesheet(getTileset());
+                _currentObjSelection = (Object*) obj.get();
+            }
+        }
+    }
+
+    if(_currentObjSelection) {
+        if(!_mouse->isLeftButtonDown()) {
+            // Using cool algorithm from https://stackoverflow.com/a/9194117
+            _currentObjSelection->setPosition(
+                (_currentObjSelection->getPosition().x - _grid->getTileSize() / 2 + _grid->getTileSize() - 1) & -_grid->getTileSize(),
+                (_currentObjSelection->getPosition().y - _grid->getTileSize() / 2 + _grid->getTileSize() - 1) & -_grid->getTileSize());
+            _currentObjSelection->setDrawShadows(true);
+            for(auto edge : _currentObjSelection->getEdges()) {
+                _grid->addEdge(
+                    {{_currentObjSelection->getPosition().x + edge.p1.x, _currentObjSelection->getPosition().y + edge.p1.y},
+                     {_currentObjSelection->getPosition().x + edge.p2.x, _currentObjSelection->getPosition().y + edge.p2.y}});
+            }
+            _currentObjSelection = nullptr;
+        }
+        else {
+            _currentObjSelection->setPosition(_mouse->getMouseX() - _grid->getTileSize() / 2,
+                _mouse->getMouseY() - _grid->getTileSize() / 2);
+        }
+    }
+
+    _renderGrid = _shop->isOpen();
 }
 
 void GameState::render() {
@@ -172,18 +207,34 @@ void GameState::render() {
             // std::list<Edge> edges = _grid->getEdges(x, y);
             // for(Edge e : edges) {
             //     SDL_SetRenderDrawColor(getRenderer(), 0xFF, 0xFF, 0x00, 0xAF);
-            //     SDL_RenderDrawLine(getRenderer(), e.p1.x, e.p1.y, e.p2.x, e.p2.y);
+            //     SDL_RenderDrawLine(getRenderer(), e.p1.x + _renderOffset.x, e.p1.y + _renderOffset.y, e.p2.x + _renderOffset.x, e.p2.y + _renderOffset.y);
             // }
         }
     }
 
     // Render objects
     for(auto obj : _grid->getObjects()) {
-        obj->render(_renderOffset.x, _renderOffset.y);
+        if(obj.get() != _currentObjSelection) obj->render(_renderOffset.x, _renderOffset.y);
     }
     // Render entities
     for(auto ent : _grid->getEntities()) {
         ent->render(_renderOffset.x, _renderOffset.y);
+    }
+
+    // Render potential tile placement
+    if(_currentObjSelection) {
+        SDL_Rect rect = {
+            ((_currentObjSelection->getPosition().x - _grid->getTileSize() / 2 + _grid->getTileSize() - 1) & -_grid->getTileSize()) + _renderOffset.x,
+            ((_currentObjSelection->getPosition().y - _grid->getTileSize() / 2 + _grid->getTileSize() - 1) & -_grid->getTileSize()) + _renderOffset.y,
+             _currentObjSelection->getNaturalSize().x,
+             _currentObjSelection->getNaturalSize().y};
+        if(_tilemap->getTile((rect.x + 16) / _grid->getTileSize(), (rect.y + 16) / _grid->getTileSize()) != TileType::EMPTY) {
+            SDL_SetRenderDrawColor(getRenderer(), 0xFF, 0x00, 0x00, 0xAF);
+        }
+        else {
+            SDL_SetRenderDrawColor(getRenderer(), 0x00, 0x00, 0xFF, 0xAF);
+        }
+        SDL_RenderFillRect(getRenderer(), &rect);
     }
 
     // Render shot path
@@ -208,6 +259,9 @@ void GameState::render() {
     for(auto c : _clickables) {
         c->render(_renderOffset.x, _renderOffset.y);
     }
+
+    // Render potential drag and drop objects
+    if(_currentObjSelection) _currentObjSelection->render(_renderOffset.x, _renderOffset.y);
 
     SDL_RenderPresent(getRenderer());
 }

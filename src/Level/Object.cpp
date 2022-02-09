@@ -28,6 +28,14 @@ void Object::setRenderSize(int w, int h) {
     _renderSize = {w, h};
 }
 
+void Object::setMoveable(bool moveable) {
+    _isMoveable = moveable;
+}
+
+void Object::setInGrid(bool isInGrid) {
+    _isInGrid = isInGrid;
+}
+
 SDL_Point Object::getPosition() {
     return _position;
 }
@@ -54,6 +62,14 @@ SDL_Point Object::getNaturalSize() {
 
 SDL_Point Object::getRenderSize() {
     return _renderSize;
+}
+
+bool Object::isMoveable() {
+    return _isMoveable;
+}
+
+bool Object::isInGrid() {
+    return _isInGrid;
 }
 
 void Object::addEdge(Edge edge) {

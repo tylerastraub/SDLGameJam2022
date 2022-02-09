@@ -17,6 +17,23 @@ Shop::Shop() {
     _inventory.push_back(std::make_shared<Diamond>(ObjectDirection::NORTH));
     _inventory[3]->setRenderSize(16, 16);
     _inventory[3]->setDrawShadows(false);
+
+    std::shared_ptr<ObjectClickable> squareButton = std::make_shared<ObjectClickable>(ObjectType::OBJECT_SQUARE);
+    squareButton->setClickRect({0, 0, 24, 24});
+    squareButton->setPosition(-32, 0 + 16 + 12);
+    _objectBuyButtons.emplace_back(squareButton);
+    std::shared_ptr<ObjectClickable> rightTriangleButton = std::make_shared<ObjectClickable>(ObjectType::OBJECT_RIGHT_TRIANGLE);
+    rightTriangleButton->setClickRect({0, 0, 24, 24});
+    rightTriangleButton->setPosition(-32, 28 + 16 + 12);
+    _objectBuyButtons.emplace_back(rightTriangleButton);
+    std::shared_ptr<ObjectClickable> longRightTriangleButton = std::make_shared<ObjectClickable>(ObjectType::OBJECT_LONG_RIGHT_TRIANGLE);
+    longRightTriangleButton->setClickRect({0, 0, 24, 24});
+    longRightTriangleButton->setPosition(-32, 56 + 16 + 12);
+    _objectBuyButtons.emplace_back(longRightTriangleButton);
+    std::shared_ptr<ObjectClickable> diamondButton = std::make_shared<ObjectClickable>(ObjectType::OBJECT_DIAMOND);
+    diamondButton->setClickRect({0, 0, 24, 24});
+    diamondButton->setPosition(-32, 84 + 16 + 12);
+    _objectBuyButtons.emplace_back(diamondButton);
 }
 
 void Shop::render(SDL_Renderer* renderer, int xOffset, int yOffset) {
@@ -54,9 +71,15 @@ void Shop::setOpen(bool open) {
     if(_opened) {
         _size.x = _maxSize.x;
         _size.y = _maxSize.y;
+        for(auto but : _objectBuyButtons) {
+            but->setPosition(4, but->getPosition().y);
+        }
     }
     else {
         _size = {0, 0};
+        for(auto but : _objectBuyButtons) {
+            but->setPosition(-32, but->getPosition().y);
+        }
     }
 }
 
@@ -65,6 +88,10 @@ void Shop::setSpritesheet(Spritesheet* spritesheet) {
     for(auto obj : _inventory) {
         obj->setObjectSpritesheet(spritesheet);
     }
+}
+
+void Shop::setMoney(int money) {
+    _money = money;
 }
 
 bool Shop::isOpen() {
@@ -77,4 +104,12 @@ int Shop::getWidth() {
 
 int Shop::getHeight() {
     return _maxSize.y;
+}
+
+int Shop::getMoney() {
+    return _money;
+}
+
+std::list<std::shared_ptr<Clickable>> Shop::getObjectBuyButtons() {
+    return _objectBuyButtons;
 }

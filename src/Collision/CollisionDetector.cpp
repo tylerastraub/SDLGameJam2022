@@ -14,8 +14,6 @@ std::vector<SDL_Point> CollisionDetector::calculateShotPath(Grid grid, SDL_Point
     SDL_Point currentLineTarget = target;
     // Calculate each line
     while(bounces <= numOfBounces) {
-        // std::cout << bounces << ": Starting at (" << currentLineStart.x << ", " << currentLineStart.y
-        // << "), ending at (" << currentLineTarget.x << ", " << currentLineTarget.y << ")" << std::endl;
         SDL_Point collisionPoint = {-1, -1};
         Edge collidedEdge = {{-1, -1}, {-1, -1}};
         std::vector<SDL_Point> shotLine = calculateLinePath(currentLineStart, currentLineTarget);
@@ -35,8 +33,6 @@ std::vector<SDL_Point> CollisionDetector::calculateShotPath(Grid grid, SDL_Point
         for(Edge edge : potentialEdges) {
             SDL_Point collision = findWhereLinesIntersect(edge.p1, edge.p2, currentLineStart, currentLineTarget);
             if(collision.x != -1 && collision.y != -1) {
-                // instead of this quick fix (which is likely causing perpendicular angle bug) can just look at normal vec to move next line start by 1 pixel out of collided edge
-            //    (collision.x != currentLineStart.x && collision.y != currentLineStart.y)) {
                 collisionPoints.push_back({edge, collision});
             }
         }

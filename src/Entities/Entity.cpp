@@ -1,7 +1,7 @@
 #include "Entity.h"
 
 Entity::Entity(int x, int y) {
-    setEntityType(EntityType::NONE);
+    setEntityType(EntityType::ENTITY_NONE);
     _position = {x, y};
 }
 

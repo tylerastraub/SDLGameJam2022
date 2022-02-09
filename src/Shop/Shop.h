@@ -3,8 +3,10 @@
 
 #include "Spritesheet.h"
 #include "Object.h"
+#include "ObjectClickable.h"
 
 #include <vector>
+#include <list>
 #include <memory>
 
 class Shop {
@@ -16,10 +18,13 @@ public:
 
     void setOpen(bool open);
     void setSpritesheet(Spritesheet* spritesheet);
+    void setMoney(int money);
 
     bool isOpen();
     int getWidth();
     int getHeight();
+    int getMoney();
+    std::list<std::shared_ptr<Clickable>> getObjectBuyButtons();
 
 private:
     SDL_Point _position = {0, 12};
@@ -31,6 +36,10 @@ private:
     
     // Items in shop inventory
     std::vector<std::shared_ptr<Object>> _inventory;
+    // Buttons for buying objects
+    std::list<std::shared_ptr<Clickable>> _objectBuyButtons;
+    // How much money is available to spend
+    int _money = 0;
 };
 
 #endif

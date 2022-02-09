@@ -46,12 +46,14 @@ private:
     SDL_Point _renderOffset = {0, -12};
 
     // Whether or not to render the grid underlay. Used for build mode
-    bool _renderGrid = false;
+    bool _renderGrid = true;
 
     // List of clickable objects. Include buttons, items, etc.
     std::list<std::shared_ptr<Clickable>> _clickables;
     // The shop object
     std::unique_ptr<Shop> _shop = nullptr;
+
+    Object* _currentObjSelection = nullptr;
 };
 
 #endif

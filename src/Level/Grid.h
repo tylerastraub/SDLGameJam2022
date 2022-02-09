@@ -21,6 +21,7 @@ public:
 
     // Goes through all tiles that edge (possibly) intersects and adds the edge coordinate to said tile
     void addEdge(Edge edge);
+    void addObject(std::shared_ptr<Object> obj);
     void addObject(std::shared_ptr<Square> square);
     void addObject(std::shared_ptr<RightTriangle> triangle);
     void addObject(std::shared_ptr<LongRightTriangle> triangle);

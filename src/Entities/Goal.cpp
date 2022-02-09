@@ -17,6 +17,8 @@ void Goal::render(int xOffset, int yOffset) {
     s->setIsLooped(false);
     s->setTileWidth(32);
     s->setTileHeight(32);
+    s->setRenderWidth(32);
+    s->setRenderHeight(32);
     if(drawShadows()) {
         s->setTileIndex(7, 0);
         s->render(getPosition().x + xOffset + 2, getPosition().y + yOffset + 2);
