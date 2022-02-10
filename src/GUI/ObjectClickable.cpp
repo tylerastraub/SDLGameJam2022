@@ -4,13 +4,14 @@
 #include "RightTriangle.h"
 #include "LongRightTriangle.h"
 #include "Diamond.h"
+#include "Shop.h"
 
 #include <iostream>
 
 ObjectClickable::ObjectClickable(TileType tileType) : _tileType(tileType) {}
 
 void ObjectClickable::onLeftMouseButtonDown() {
-    if(_object == nullptr) {
+    if(_object == nullptr && _shop->getMoney() > 0) {
         switch(_tileType) {
             case(TileType::SQUARE): {
                 _object = std::make_shared<Square>(ObjectDirection::NORTH);
@@ -34,6 +35,7 @@ void ObjectClickable::onLeftMouseButtonDown() {
         _object->setDrawShadows(false);
         _object->setMoveable(true);
         _object->setInGrid(false);
+        _shop->setMoney(_shop->getMoney() - 1);
     }
 }
 
@@ -90,6 +92,10 @@ void ObjectClickable::setDefaultPosition(int x, int y) {
     _defaultPosition = {x, y};
 }
 
+void ObjectClickable::setShop(Shop* shop) {
+    _shop = shop;
+}
+
 void ObjectClickable::clearObject() {
     _object = nullptr;
 }
@@ -100,4 +106,8 @@ std::shared_ptr<Object> ObjectClickable::getObject() {
 
 TileType ObjectClickable::getTileType() {
     return _tileType;
+}
+
+Shop* ObjectClickable::getShop() {
+    return _shop;
 }

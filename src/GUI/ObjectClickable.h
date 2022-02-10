@@ -4,6 +4,8 @@
 #include "Clickable.h"
 #include "Object.h"
 
+class Shop;
+
 #include <memory>
 
 class ObjectClickable : public Clickable {
@@ -19,15 +21,18 @@ public:
     void rotateRight();
 
     void setDefaultPosition(int x, int y);
+    void setShop(Shop* shop);
     void clearObject();
 
     std::shared_ptr<Object> getObject();
     TileType getTileType();
+    Shop* getShop();
 
 private:
     SDL_Point _defaultPosition = {0, 0};
     std::shared_ptr<Object> _object = nullptr;
     TileType _tileType = TileType::EMPTY;
+    Shop* _shop = nullptr;
 };
 
 #endif

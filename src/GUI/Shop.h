@@ -15,6 +15,7 @@ public:
     ~Shop() = default;
 
     void render(SDL_Renderer* renderer, int xOffset, int yOffset);
+    void resetMoney();
 
     void setOpen(bool open);
     void setSpritesheet(Spritesheet* spritesheet);
@@ -38,6 +39,8 @@ private:
     std::vector<std::shared_ptr<Object>> _inventory;
     // Buttons for buying objects
     std::list<std::shared_ptr<Clickable>> _objectBuyButtons;
+    // Starting money. _money is set to this upon reset
+    int _startingMoney = 3;
     // How much money is available to spend
     int _money = 3;
 };

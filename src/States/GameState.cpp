@@ -9,9 +9,9 @@
 /**
  * TODO:
  * - Add level class that loads levels from file and creates proper tilemap with start, goal, etc...
- * - Add text
- * - Add shop currency
+ * - Drag to aim shot
  * - Actually create levels lol
+ * - Add next level button
  * - IF HAVE TIME - Add sound + menu
  */
 
@@ -48,6 +48,10 @@ void GameState::init() {
     // Shop init
     _shop = std::make_unique<Shop>();
     _shop->setSpritesheet(getTileset());
+    for(auto bb : _shop->getObjectBuyButtons()) {
+        ObjectClickable* oc = (ObjectClickable*) bb.get();
+        oc->setShop(_shop.get());
+    }
 
     // Clickables init
     std::shared_ptr<ShopButton> shopButton = std::make_shared<ShopButton>();
@@ -108,6 +112,7 @@ void GameState::tick(float timescale) {
         _resetButton->setsRequestsReset(false);
         _tilemap = std::make_unique<Tilemap>(getTileset(), _defaultTilemap);
         _grid = std::make_unique<Grid>(_tilemap->getGrid());
+        _shop->resetMoney();
         if(_shot) _shot->kill();
         _shot = nullptr;
         _currentObjSelection = nullptr;

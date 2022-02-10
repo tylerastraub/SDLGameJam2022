@@ -66,6 +66,10 @@ void Shop::render(SDL_Renderer* renderer, int xOffset, int yOffset) {
     }
 }
 
+void Shop::resetMoney() {
+    _money = _startingMoney;
+}
+
 void Shop::setOpen(bool open) {
     _opened = open;
     if(_opened) {
