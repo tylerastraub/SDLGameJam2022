@@ -10,7 +10,6 @@
  * TODO:
  * - Add ability to rotate objects before placing
  * - Add reset button to reset level
- * - Add start entity
  * - Add level class that loads levels from file and creates proper tilemap with start, goal, etc...
  * - Add text
  * - IF HAVE TIME - Add sound + menu
@@ -30,7 +29,7 @@ void GameState::init() {
         {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
         {1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 4, 0, 0, 1},
         {1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 0, 2, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 6, 0, 11, 0, 0, 0, 1},
+        {1, 0, 2, 0, 0, 0, 7, 0, 0, 12, 0, 0, 0, 6, 0, 11, 0, 0, 0, 1},
         {1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
         {1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 1},
         {1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -43,8 +42,8 @@ void GameState::init() {
     _tilemap->printTilemap();
 
     // Shot init
-    _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _mouse->getMousePos(), _numOfGuideLineBounces);
-    _shotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _mouse->getMousePos(), _numOfBounces);
+    _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _tilemap->getStart(), _mouse->getMousePos(), _numOfGuideLineBounces);
+    _shotPath = _collisionDetector.calculateShotPath(*_grid, _tilemap->getStart(), _mouse->getMousePos(), _numOfBounces);
 
     // Shop init
     _shop = std::make_unique<Shop>();
@@ -93,7 +92,7 @@ void GameState::handleMouseInput(SDL_Event e) {
 
 void GameState::tick(float timescale) {
     if(_mouse->mouseMoved()) {
-        _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _mouse->getMousePos(), _numOfGuideLineBounces);
+        _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _tilemap->getStart(), _mouse->getMousePos(), _numOfGuideLineBounces);
     }
 
     for(auto ent : _grid->getEntities()) {
@@ -116,7 +115,7 @@ void GameState::tick(float timescale) {
     }
     if(_mouse->isRightButtonDown()) {
         if(_shot) delete _shot;
-        _shotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _mouse->getMousePos(), _numOfBounces);
+        _shotPath = _collisionDetector.calculateShotPath(*_grid, _tilemap->getStart(), _mouse->getMousePos(), _numOfBounces);
         auto s = _shotPath.begin();
         _shot = new Projectile(s->x, s->y);
         _shot->setPath(_shotPath);
@@ -158,7 +157,7 @@ void GameState::tick(float timescale) {
             _currentObjSelection = nullptr;
             if(_currentOC) _currentOC->clearObject();
             _currentOC = nullptr;
-            _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _mouse->getMousePos(), _numOfGuideLineBounces);
+            _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _tilemap->getStart(), _mouse->getMousePos(), _numOfGuideLineBounces);
         }
         else {
             _currentObjSelection->setPosition(_mouse->getMouseX() - _grid->getTileSize() / 2,
@@ -191,6 +190,7 @@ void GameState::render() {
                 case TileType::LONG_RIGHT_TRIANGLE_SOUTH:
                 case TileType::LONG_RIGHT_TRIANGLE_WEST:
                 case TileType::GOAL_TILE:
+                case TileType::START_TILE:
                     SDL_SetRenderDrawColor(getRenderer(), 0x64, 0x63, 0x65, 0xFF);
                     SDL_RenderFillRect(getRenderer(), &tile);
                     if(_renderGrid) {

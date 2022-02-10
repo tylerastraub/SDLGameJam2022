@@ -130,6 +130,10 @@ Tilemap::Tilemap(Spritesheet* tileset, std::vector<std::vector<int>> tilemap) {
                     _tilemapGrid->addEntity(goal);
                     break;
                 }
+                case(TileType::START_TILE): {
+                    _start = {x, y};
+                    break;
+                }
             }
         }
         _tilemap.push_back(row);
@@ -320,4 +324,8 @@ int Tilemap::getTileSize() {
 
 Grid Tilemap::getGrid() {
     return *_tilemapGrid.get();
+}
+
+SDL_Point Tilemap::getStart() {
+    return {_start.x * TILE_SIZE + TILE_SIZE / 2, _start.y * TILE_SIZE + TILE_SIZE / 2};
 }

@@ -28,6 +28,7 @@ public:
     TileType getTile(int x, int y);
     int getTileSize();
     Grid getGrid();
+    SDL_Point getStart();
 
 private:
     const int TILE_SIZE = 32;
@@ -38,6 +39,8 @@ private:
     std::vector<std::vector<TileType>> _tilemap;
     std::unique_ptr<Grid> _tilemapGrid = nullptr;
     Spritesheet* _tileset = nullptr;
+
+    SDL_Point _start = {0, 0};
 };
 
 #endif
