@@ -53,6 +53,7 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/GUI/ShopButton.cpp
     ${PROJECT_SOURCE_DIR}/src/GUI/ObjectClickable.cpp
     ${PROJECT_SOURCE_DIR}/src/GUI/Shop.cpp
+    ${PROJECT_SOURCE_DIR}/src/GUI/ResetButton.cpp
     )
 
 if(WIN32)

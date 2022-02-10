@@ -23,6 +23,7 @@ public:
 
     void setTile(int x, int y, TileType tileType);
 
+    std::vector<std::vector<TileType>> getTilemap();
     int getTilemapWidth();
     int getTilemapHeight();
     TileType getTile(int x, int y);

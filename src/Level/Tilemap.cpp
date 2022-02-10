@@ -303,6 +303,10 @@ void Tilemap::setTile(int x, int y, TileType tileType) {
     }
 }
 
+std::vector<std::vector<TileType>> Tilemap::getTilemap() {
+    return _tilemap;
+}
+
 int Tilemap::getTilemapWidth() {
     return _tilemapWidth;
 }

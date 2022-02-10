@@ -11,6 +11,7 @@
  * - Add reset button to reset level
  * - Add level class that loads levels from file and creates proper tilemap with start, goal, etc...
  * - Add text
+ * - Actually create levels lol
  * - IF HAVE TIME - Add sound + menu
  */
 
@@ -37,7 +38,7 @@ void GameState::init() {
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
     };
     _tilemap = std::make_unique<Tilemap>(getTileset(), testMap);
-    _defaultTilemap = std::make_unique<Tilemap>(getTileset(), testMap);
+    _defaultTilemap = testMap;
     _grid = std::make_unique<Grid>(_tilemap->getGrid());
 
     // Shot init
@@ -54,6 +55,11 @@ void GameState::init() {
     shopButton->setSpritesheet(getTileset());
     shopButton->setShop(_shop.get());
     _clickables.emplace_back(shopButton);
+    _resetButton = std::make_shared<ResetButton>();
+    _resetButton->setPosition(24, 16);
+    _resetButton->setSpritesheet(getTileset());
+    _resetButton->setShop(_shop.get());
+    _clickables.emplace_back(_resetButton);
 }
 
 void GameState::handleInput() {
@@ -96,6 +102,16 @@ void GameState::handleMouseInput(SDL_Event e) {
 void GameState::tick(float timescale) {
     if(_mouse->mouseMoved()) {
         _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _tilemap->getStart(), _mouse->getMousePos(), _numOfGuideLineBounces);
+    }
+
+    if(_resetButton->requestsReset()) {
+        _resetButton->setsRequestsReset(false);
+        _tilemap = std::make_unique<Tilemap>(getTileset(), _defaultTilemap);
+        _grid = std::make_unique<Grid>(_tilemap->getGrid());
+        if(_shot) _shot->kill();
+        _shot = nullptr;
+        _currentObjSelection = nullptr;
+        _currentOC = nullptr;
     }
 
     for(auto ent : _grid->getEntities()) {

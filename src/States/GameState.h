@@ -8,6 +8,7 @@
 #include "Projectile.h"
 #include "Clickable.h"
 #include "Shop.h"
+#include "ResetButton.h"
 
 #include <memory>
 
@@ -28,7 +29,7 @@ private:
     std::unique_ptr<Mouse> _mouse = nullptr;
     std::unique_ptr<Tilemap> _tilemap = nullptr;
     // The base for the tilemap. Used for resetting so we remember what OG tilemap looked like
-    std::unique_ptr<Tilemap> _defaultTilemap = nullptr;
+    std::vector<std::vector<int>> _defaultTilemap;
     std::unique_ptr<Grid> _grid = nullptr;
     CollisionDetector _collisionDetector;
 
@@ -54,6 +55,8 @@ private:
     std::list<std::shared_ptr<Clickable>> _clickables;
     // The shop object
     std::unique_ptr<Shop> _shop = nullptr;
+    // The reset button
+    std::shared_ptr<ResetButton> _resetButton = nullptr;
 
     std::shared_ptr<Object> _currentObjSelection = nullptr;
     ObjectClickable* _currentOC = nullptr;
