@@ -3,6 +3,7 @@
 #include <iostream>
 
 RightTriangle::RightTriangle() {
+    setTileType(TileType::RIGHT_TRIANGLE_NORTH);
     // Hypotonuse
     addEdge({{0, 0}, {TILE_SIZE, TILE_SIZE}});
     // Bottom
@@ -16,6 +17,7 @@ RightTriangle::RightTriangle(ObjectDirection dir) {
     setDirection(dir);
     switch(dir) {
         case ObjectDirection::NORTH:
+            setTileType(TileType::RIGHT_TRIANGLE_NORTH);
             // Hypotonuse
             addEdge({{0, 0}, {TILE_SIZE, TILE_SIZE}});
             // Bottom
@@ -24,6 +26,7 @@ RightTriangle::RightTriangle(ObjectDirection dir) {
             addEdge({{0, 0}, {0, TILE_SIZE}});
             break;
         case ObjectDirection::EAST:
+            setTileType(TileType::RIGHT_TRIANGLE_EAST);
             // Hypotonuse
             addEdge({{0, TILE_SIZE}, {TILE_SIZE, 0}});
             // Top
@@ -32,6 +35,7 @@ RightTriangle::RightTriangle(ObjectDirection dir) {
             addEdge({{0, 0}, {0, TILE_SIZE}});
             break;
         case ObjectDirection::SOUTH:
+            setTileType(TileType::RIGHT_TRIANGLE_SOUTH);
             // Hypotonuse
             addEdge({{0, 0}, {TILE_SIZE, TILE_SIZE}});
             // Top
@@ -40,6 +44,7 @@ RightTriangle::RightTriangle(ObjectDirection dir) {
             addEdge({{TILE_SIZE, 0}, {TILE_SIZE, TILE_SIZE}});
             break;
         case ObjectDirection::WEST:
+            setTileType(TileType::RIGHT_TRIANGLE_WEST);
             // Hypotonuse
             addEdge({{0, TILE_SIZE}, {TILE_SIZE, 0}});
             // Bottom

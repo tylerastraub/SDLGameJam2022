@@ -1,8 +1,8 @@
 #ifndef TILEMAP_H
 #define TILEMAP_H
 
-#include "TileType.h"
 #include "Grid.h"
+#include "Object.h"
 
 #include <vector>
 #include <memory>
@@ -18,6 +18,10 @@ public:
 
     void allocateTilemap(int w, int h);
     void printTilemap();
+    bool canPlaceObject(Object* obj);
+    bool canPlaceObject(TileType tileType, int x, int y);
+
+    void setTile(int x, int y, TileType tileType);
 
     int getTilemapWidth();
     int getTilemapHeight();

@@ -158,6 +158,147 @@ void Tilemap::printTilemap() {
     }
 }
 
+bool Tilemap::canPlaceObject(Object* obj) {
+    SDL_Point objectTilePos = {obj->getPosition().x / TILE_SIZE, obj->getPosition().y / TILE_SIZE};
+    switch(obj->getTileType()) {
+        case(TileType::SQUARE):
+        case(TileType::DIAMOND):
+        case(TileType::RIGHT_TRIANGLE_NORTH):
+        case(TileType::RIGHT_TRIANGLE_EAST):
+        case(TileType::RIGHT_TRIANGLE_SOUTH):
+        case(TileType::RIGHT_TRIANGLE_WEST):
+            return (getTile(objectTilePos.x, objectTilePos.y) == TileType::EMPTY &&
+                getTile(objectTilePos.x - 1, objectTilePos.y) != TileType::LONG_RIGHT_TRIANGLE_EAST &&
+                getTile(objectTilePos.x - 1, objectTilePos.y) != TileType::LONG_RIGHT_TRIANGLE_WEST &&
+                getTile(objectTilePos.x, objectTilePos.y - 1) != TileType::LONG_RIGHT_TRIANGLE_NORTH &&
+                getTile(objectTilePos.x, objectTilePos.y - 1) != TileType::LONG_RIGHT_TRIANGLE_SOUTH);
+            break;
+        case(TileType::LONG_RIGHT_TRIANGLE_NORTH):
+            return (getTile(objectTilePos.x, objectTilePos.y) == TileType::EMPTY &&
+                getTile(objectTilePos.x - 1, objectTilePos.y) != TileType::LONG_RIGHT_TRIANGLE_EAST &&
+                getTile(objectTilePos.x - 1, objectTilePos.y) != TileType::LONG_RIGHT_TRIANGLE_WEST &&
+                getTile(objectTilePos.x, objectTilePos.y - 1) != TileType::LONG_RIGHT_TRIANGLE_NORTH &&
+                getTile(objectTilePos.x, objectTilePos.y - 1) != TileType::LONG_RIGHT_TRIANGLE_SOUTH &&
+                getTile(objectTilePos.x, objectTilePos.y + 1) == TileType::EMPTY &&
+                getTile(objectTilePos.x - 1, objectTilePos.y + 1) != TileType::LONG_RIGHT_TRIANGLE_EAST &&
+                getTile(objectTilePos.x - 1, objectTilePos.y + 1) != TileType::LONG_RIGHT_TRIANGLE_WEST &&
+                getTile(objectTilePos.x, objectTilePos.y) != TileType::LONG_RIGHT_TRIANGLE_NORTH &&
+                getTile(objectTilePos.x, objectTilePos.y) != TileType::LONG_RIGHT_TRIANGLE_SOUTH);
+            break;
+        case(TileType::LONG_RIGHT_TRIANGLE_EAST):
+            return (getTile(objectTilePos.x, objectTilePos.y) == TileType::EMPTY &&
+                getTile(objectTilePos.x - 1, objectTilePos.y) != TileType::LONG_RIGHT_TRIANGLE_EAST &&
+                getTile(objectTilePos.x - 1, objectTilePos.y) != TileType::LONG_RIGHT_TRIANGLE_WEST &&
+                getTile(objectTilePos.x, objectTilePos.y - 1) != TileType::LONG_RIGHT_TRIANGLE_NORTH &&
+                getTile(objectTilePos.x, objectTilePos.y - 1) != TileType::LONG_RIGHT_TRIANGLE_SOUTH &&
+                getTile(objectTilePos.x + 1, objectTilePos.y) == TileType::EMPTY &&
+                getTile(objectTilePos.x, objectTilePos.y) != TileType::LONG_RIGHT_TRIANGLE_EAST &&
+                getTile(objectTilePos.x, objectTilePos.y) != TileType::LONG_RIGHT_TRIANGLE_WEST &&
+                getTile(objectTilePos.x + 1, objectTilePos.y - 1) != TileType::LONG_RIGHT_TRIANGLE_NORTH &&
+                getTile(objectTilePos.x + 1, objectTilePos.y - 1) != TileType::LONG_RIGHT_TRIANGLE_SOUTH);
+            break;
+        case(TileType::LONG_RIGHT_TRIANGLE_SOUTH):
+            return (getTile(objectTilePos.x, objectTilePos.y) == TileType::EMPTY &&
+                getTile(objectTilePos.x - 1, objectTilePos.y) != TileType::LONG_RIGHT_TRIANGLE_EAST &&
+                getTile(objectTilePos.x - 1, objectTilePos.y) != TileType::LONG_RIGHT_TRIANGLE_WEST &&
+                getTile(objectTilePos.x, objectTilePos.y - 1) != TileType::LONG_RIGHT_TRIANGLE_NORTH &&
+                getTile(objectTilePos.x, objectTilePos.y - 1) != TileType::LONG_RIGHT_TRIANGLE_SOUTH &&
+                getTile(objectTilePos.x, objectTilePos.y + 1) == TileType::EMPTY &&
+                getTile(objectTilePos.x - 1, objectTilePos.y + 1) != TileType::LONG_RIGHT_TRIANGLE_EAST &&
+                getTile(objectTilePos.x - 1, objectTilePos.y + 1) != TileType::LONG_RIGHT_TRIANGLE_WEST &&
+                getTile(objectTilePos.x, objectTilePos.y) != TileType::LONG_RIGHT_TRIANGLE_NORTH &&
+                getTile(objectTilePos.x, objectTilePos.y) != TileType::LONG_RIGHT_TRIANGLE_SOUTH);
+            break;
+        case(TileType::LONG_RIGHT_TRIANGLE_WEST):
+            return (getTile(objectTilePos.x, objectTilePos.y) == TileType::EMPTY &&
+                getTile(objectTilePos.x - 1, objectTilePos.y) != TileType::LONG_RIGHT_TRIANGLE_EAST &&
+                getTile(objectTilePos.x - 1, objectTilePos.y) != TileType::LONG_RIGHT_TRIANGLE_WEST &&
+                getTile(objectTilePos.x, objectTilePos.y - 1) != TileType::LONG_RIGHT_TRIANGLE_NORTH &&
+                getTile(objectTilePos.x, objectTilePos.y - 1) != TileType::LONG_RIGHT_TRIANGLE_SOUTH &&
+                getTile(objectTilePos.x + 1, objectTilePos.y) == TileType::EMPTY &&
+                getTile(objectTilePos.x, objectTilePos.y) != TileType::LONG_RIGHT_TRIANGLE_EAST &&
+                getTile(objectTilePos.x, objectTilePos.y) != TileType::LONG_RIGHT_TRIANGLE_WEST &&
+                getTile(objectTilePos.x + 1, objectTilePos.y - 1) != TileType::LONG_RIGHT_TRIANGLE_NORTH &&
+                getTile(objectTilePos.x + 1, objectTilePos.y - 1) != TileType::LONG_RIGHT_TRIANGLE_SOUTH);
+            break;
+    }
+
+    return false;
+}
+
+bool Tilemap::canPlaceObject(TileType tileType, int x, int y) {
+    switch(tileType) {
+        case(TileType::SQUARE):
+        case(TileType::DIAMOND):
+        case(TileType::RIGHT_TRIANGLE_NORTH):
+        case(TileType::RIGHT_TRIANGLE_EAST):
+        case(TileType::RIGHT_TRIANGLE_SOUTH):
+        case(TileType::RIGHT_TRIANGLE_WEST):
+            return (getTile(x, y) == TileType::EMPTY &&
+                getTile(x - 1, y) != TileType::LONG_RIGHT_TRIANGLE_EAST &&
+                getTile(x - 1, y) != TileType::LONG_RIGHT_TRIANGLE_WEST &&
+                getTile(x, y - 1) != TileType::LONG_RIGHT_TRIANGLE_NORTH &&
+                getTile(x, y - 1) != TileType::LONG_RIGHT_TRIANGLE_SOUTH);
+            break;
+        case(TileType::LONG_RIGHT_TRIANGLE_NORTH):
+            return (getTile(x, y) == TileType::EMPTY &&
+                getTile(x - 1, y) != TileType::LONG_RIGHT_TRIANGLE_EAST &&
+                getTile(x - 1, y) != TileType::LONG_RIGHT_TRIANGLE_WEST &&
+                getTile(x, y - 1) != TileType::LONG_RIGHT_TRIANGLE_NORTH &&
+                getTile(x, y - 1) != TileType::LONG_RIGHT_TRIANGLE_SOUTH &&
+                getTile(x, y + 1) == TileType::EMPTY &&
+                getTile(x - 1, y + 1) != TileType::LONG_RIGHT_TRIANGLE_EAST &&
+                getTile(x - 1, y + 1) != TileType::LONG_RIGHT_TRIANGLE_WEST &&
+                getTile(x, y) != TileType::LONG_RIGHT_TRIANGLE_NORTH &&
+                getTile(x, y) != TileType::LONG_RIGHT_TRIANGLE_SOUTH);
+            break;
+        case(TileType::LONG_RIGHT_TRIANGLE_EAST):
+            return (getTile(x, y) == TileType::EMPTY &&
+                getTile(x - 1, y) != TileType::LONG_RIGHT_TRIANGLE_EAST &&
+                getTile(x - 1, y) != TileType::LONG_RIGHT_TRIANGLE_WEST &&
+                getTile(x, y - 1) != TileType::LONG_RIGHT_TRIANGLE_NORTH &&
+                getTile(x, y - 1) != TileType::LONG_RIGHT_TRIANGLE_SOUTH &&
+                getTile(x + 1, y) == TileType::EMPTY &&
+                getTile(x, y) != TileType::LONG_RIGHT_TRIANGLE_EAST &&
+                getTile(x, y) != TileType::LONG_RIGHT_TRIANGLE_WEST &&
+                getTile(x + 1, y - 1) != TileType::LONG_RIGHT_TRIANGLE_NORTH &&
+                getTile(x + 1, y - 1) != TileType::LONG_RIGHT_TRIANGLE_SOUTH);
+            break;
+        case(TileType::LONG_RIGHT_TRIANGLE_SOUTH):
+            return (getTile(x, y) == TileType::EMPTY &&
+                getTile(x - 1, y) != TileType::LONG_RIGHT_TRIANGLE_EAST &&
+                getTile(x - 1, y) != TileType::LONG_RIGHT_TRIANGLE_WEST &&
+                getTile(x, y - 1) != TileType::LONG_RIGHT_TRIANGLE_NORTH &&
+                getTile(x, y - 1) != TileType::LONG_RIGHT_TRIANGLE_SOUTH &&
+                getTile(x, y + 1) == TileType::EMPTY &&
+                getTile(x - 1, y + 1) != TileType::LONG_RIGHT_TRIANGLE_EAST &&
+                getTile(x - 1, y + 1) != TileType::LONG_RIGHT_TRIANGLE_WEST &&
+                getTile(x, y) != TileType::LONG_RIGHT_TRIANGLE_NORTH &&
+                getTile(x, y) != TileType::LONG_RIGHT_TRIANGLE_SOUTH);
+            break;
+        case(TileType::LONG_RIGHT_TRIANGLE_WEST):
+            return (getTile(x, y) == TileType::EMPTY &&
+                getTile(x - 1, y) != TileType::LONG_RIGHT_TRIANGLE_EAST &&
+                getTile(x - 1, y) != TileType::LONG_RIGHT_TRIANGLE_WEST &&
+                getTile(x, y - 1) != TileType::LONG_RIGHT_TRIANGLE_NORTH &&
+                getTile(x, y - 1) != TileType::LONG_RIGHT_TRIANGLE_SOUTH &&
+                getTile(x + 1, y) == TileType::EMPTY &&
+                getTile(x, y) != TileType::LONG_RIGHT_TRIANGLE_EAST &&
+                getTile(x, y) != TileType::LONG_RIGHT_TRIANGLE_WEST &&
+                getTile(x + 1, y - 1) != TileType::LONG_RIGHT_TRIANGLE_NORTH &&
+                getTile(x + 1, y - 1) != TileType::LONG_RIGHT_TRIANGLE_SOUTH);
+            break;
+    }
+
+    return false;
+}
+
+void Tilemap::setTile(int x, int y, TileType tileType) {
+    if(x >= 0 && x < _tilemapWidth && y >= 0 && y < _tilemapHeight) {
+        _tilemap[y][x] = tileType;
+    }
+}
+
 int Tilemap::getTilemapWidth() {
     return _tilemapWidth;
 }
@@ -167,7 +308,10 @@ int Tilemap::getTilemapHeight() {
 }
 
 TileType Tilemap::getTile(int x, int y) {
-    return _tilemap[y][x];
+    if(x >= 0 && x < _tilemapWidth && y >= 0 && y < _tilemapHeight) {
+        return _tilemap[y][x];
+    }
+    return TileType::SQUARE;
 }
 
 int Tilemap::getTileSize() {

@@ -8,7 +8,7 @@
 
 class ObjectClickable : public Clickable {
 public:
-    ObjectClickable(ObjectType objectType);
+    ObjectClickable(TileType tileType);
     ~ObjectClickable() = default;
     
     void onLeftMouseButtonDown() override;
@@ -18,14 +18,15 @@ public:
     void resetDefaultPosition();
 
     void setDefaultPosition(int x, int y);
+    void clearObject();
 
     std::shared_ptr<Object> getObject();
-    ObjectType getObjectType();
+    TileType getTileType();
 
 private:
     SDL_Point _defaultPosition = {0, 0};
     std::shared_ptr<Object> _object = nullptr;
-    ObjectType _objectType = ObjectType::OBJECT_NONE;
+    TileType _tileType = TileType::EMPTY;
 };
 
 #endif

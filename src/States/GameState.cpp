@@ -10,11 +10,10 @@
  * TODO:
  * - Add ability to rotate objects before placing
  * - Add reset button to reset level
- * - Show colliding tiles while dragging (must fix for long right triangle)
- * - Update tilemap based on new objects added
  * - Add start entity
  * - Add level class that loads levels from file and creates proper tilemap with start, goal, etc...
- * - Add sounds?
+ * - Add text
+ * - IF HAVE TIME - Add sound + menu
  */
 
 void GameState::init() {
@@ -126,30 +125,39 @@ void GameState::tick(float timescale) {
     _collisionDetector.checkForClickableAction(_mouse.get(), _shop->getObjectBuyButtons());
     for(auto bb : _shop->getObjectBuyButtons()) {
         auto oc = (ObjectClickable*) bb.get();
-        std::shared_ptr<Object> obj = oc->getObject();
-        if(obj != nullptr) {
-            if(!obj->isInGrid()) {
-                _grid->addObject(oc->getObject());
-                obj->setInGrid(true);
-                obj->setObjectSpritesheet(getTileset());
-                _currentObjSelection = (Object*) obj.get();
+        if(oc->getObject() != nullptr) {
+            _currentObjSelection = oc->getObject();
+            _currentOC = oc;
+            if(!_currentObjSelection->isInGrid()) {
+                _currentObjSelection->setInGrid(true);
+                _currentObjSelection->setObjectSpritesheet(getTileset());
             }
         }
     }
 
     if(_currentObjSelection) {
+        // If object gets dropped
         if(!_mouse->isLeftButtonDown()) {
             // Using cool algorithm from https://stackoverflow.com/a/9194117
             _currentObjSelection->setPosition(
                 (_currentObjSelection->getPosition().x - _grid->getTileSize() / 2 + _grid->getTileSize() - 1) & -_grid->getTileSize(),
                 (_currentObjSelection->getPosition().y - _grid->getTileSize() / 2 + _grid->getTileSize() - 1) & -_grid->getTileSize());
-            _currentObjSelection->setDrawShadows(true);
-            for(auto edge : _currentObjSelection->getEdges()) {
-                _grid->addEdge(
-                    {{_currentObjSelection->getPosition().x + edge.p1.x, _currentObjSelection->getPosition().y + edge.p1.y},
-                     {_currentObjSelection->getPosition().x + edge.p2.x, _currentObjSelection->getPosition().y + edge.p2.y}});
+            if(_tilemap->canPlaceObject(_currentObjSelection.get())) {
+                _grid->addObject(_currentObjSelection);
+                _currentObjSelection->setDrawShadows(true);
+                for(auto edge : _currentObjSelection->getEdges()) {
+                    _grid->addEdge(
+                        {{_currentObjSelection->getPosition().x + edge.p1.x, _currentObjSelection->getPosition().y + edge.p1.y},
+                        {_currentObjSelection->getPosition().x + edge.p2.x, _currentObjSelection->getPosition().y + edge.p2.y}});
+                }
+                _tilemap->setTile(_currentObjSelection->getPosition().x / _tilemap->getTileSize(),
+                    _currentObjSelection->getPosition().y / _tilemap->getTileSize(),
+                    _currentObjSelection->getTileType());
+                _currentObjSelection->setMoveable(false);
             }
             _currentObjSelection = nullptr;
+            if(_currentOC) _currentOC->clearObject();
+            _currentOC = nullptr;
             _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _mouse->getMousePos(), _numOfGuideLineBounces);
         }
         else {
@@ -214,7 +222,7 @@ void GameState::render() {
 
     // Render objects
     for(auto obj : _grid->getObjects()) {
-        if(obj.get() != _currentObjSelection) obj->render(_renderOffset.x, _renderOffset.y);
+        if(obj.get() != _currentObjSelection.get()) obj->render(_renderOffset.x, _renderOffset.y);
     }
     // Render entities
     for(auto ent : _grid->getEntities()) {
@@ -228,11 +236,11 @@ void GameState::render() {
             ((_currentObjSelection->getPosition().y - _grid->getTileSize() / 2 + _grid->getTileSize() - 1) & -_grid->getTileSize()) + _renderOffset.y,
              _currentObjSelection->getNaturalSize().x,
              _currentObjSelection->getNaturalSize().y};
-        if(_tilemap->getTile((rect.x + 16) / _grid->getTileSize(), (rect.y + 16) / _grid->getTileSize()) != TileType::EMPTY) {
-            SDL_SetRenderDrawColor(getRenderer(), 0xFF, 0x00, 0x00, 0xAF);
+        if(_tilemap->canPlaceObject(_currentObjSelection->getTileType(), (rect.x + 16) / _grid->getTileSize(), (rect.y + 16) / _grid->getTileSize())) {
+            SDL_SetRenderDrawColor(getRenderer(), 0x00, 0x00, 0xFF, 0x90);
         }
         else {
-            SDL_SetRenderDrawColor(getRenderer(), 0x00, 0x00, 0xFF, 0xAF);
+            SDL_SetRenderDrawColor(getRenderer(), 0xFF, 0x00, 0x00, 0x90);
         }
         SDL_RenderFillRect(getRenderer(), &rect);
     }

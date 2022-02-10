@@ -3,6 +3,7 @@
 #include <iostream>
 
 Square::Square() {
+    setTileType(TileType::SQUARE);
     // Top
     addEdge({{-1, -1}, {TILE_SIZE, -1}});
     // Right
@@ -14,6 +15,7 @@ Square::Square() {
 }
 
 Square::Square(ObjectDirection dir) {
+    setTileType(TileType::SQUARE);
     // Top
     addEdge({{-1, -1}, {TILE_SIZE, -1}});
     // Right

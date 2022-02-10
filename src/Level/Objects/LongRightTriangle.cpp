@@ -1,6 +1,7 @@
 #include "LongRightTriangle.h"
 
 LongRightTriangle::LongRightTriangle() {
+    setTileType(TileType::LONG_RIGHT_TRIANGLE_NORTH);
     // Hypotonuse
     addEdge({{0, 0}, {TILE_SIZE, TILE_SIZE * 2}});
     // Left
@@ -15,6 +16,7 @@ LongRightTriangle::LongRightTriangle(ObjectDirection dir) {
     setDirection(dir);
     switch(dir) {
         case(ObjectDirection::NORTH):
+            setTileType(TileType::LONG_RIGHT_TRIANGLE_NORTH);
             // Hypotonuse
             addEdge({{0, 0}, {TILE_SIZE, TILE_SIZE * 2}});
             // Left
@@ -23,6 +25,7 @@ LongRightTriangle::LongRightTriangle(ObjectDirection dir) {
             addEdge({{0, TILE_SIZE * 2}, {TILE_SIZE, TILE_SIZE * 2}});
             break;
         case(ObjectDirection::EAST):
+            setTileType(TileType::LONG_RIGHT_TRIANGLE_EAST);
             // Hypotonuse
             addEdge({{0, TILE_SIZE}, {TILE_SIZE * 2, 0}});
             // Left
@@ -31,6 +34,7 @@ LongRightTriangle::LongRightTriangle(ObjectDirection dir) {
             addEdge({{0, 0}, {TILE_SIZE * 2, 0}});
             break;
         case(ObjectDirection::SOUTH):
+            setTileType(TileType::LONG_RIGHT_TRIANGLE_SOUTH);
             // Hypotonuse
             addEdge({{0, 0}, {TILE_SIZE, TILE_SIZE * 2}});
             // Right
@@ -39,6 +43,7 @@ LongRightTriangle::LongRightTriangle(ObjectDirection dir) {
             addEdge({{0, 0}, {TILE_SIZE, 0}});
             break;
         case(ObjectDirection::WEST):
+            setTileType(TileType::LONG_RIGHT_TRIANGLE_WEST);
             // Hypotonuse
             addEdge({{0, TILE_SIZE}, {TILE_SIZE * 2, 0}});
             // Right

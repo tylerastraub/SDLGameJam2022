@@ -2,6 +2,7 @@
 
 // Note that left corner of diamond has some funky collisions properties... need to fix at some point
 Diamond::Diamond() {
+    setTileType(TileType::DIAMOND);
     // Top left
     addEdge({{0, TILE_SIZE / 2}, {TILE_SIZE / 2, 0}});
     // Top right
@@ -13,6 +14,7 @@ Diamond::Diamond() {
 }
 
 Diamond::Diamond(ObjectDirection dir) {
+    setTileType(TileType::DIAMOND);
     // Top left
     addEdge({{0, TILE_SIZE / 2}, {TILE_SIZE / 2, 0}});
     // Top right

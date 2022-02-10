@@ -36,6 +36,10 @@ void Object::setInGrid(bool isInGrid) {
     _isInGrid = isInGrid;
 }
 
+void Object::setTileType(TileType tileType) {
+    _tileType = tileType;
+}
+
 SDL_Point Object::getPosition() {
     return _position;
 }
@@ -70,6 +74,10 @@ bool Object::isMoveable() {
 
 bool Object::isInGrid() {
     return _isInGrid;
+}
+
+TileType Object::getTileType() {
+    return _tileType;
 }
 
 void Object::addEdge(Edge edge) {

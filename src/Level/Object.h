@@ -3,6 +3,7 @@
 
 #include "Edge.h"
 #include "Spritesheet.h"
+#include "TileType.h"
 
 #include <list>
 
@@ -11,14 +12,6 @@ enum ObjectDirection {
     EAST = 1,
     SOUTH = 2,
     WEST = 3
-};
-
-enum ObjectType {
-    OBJECT_NONE = 0,
-    OBJECT_SQUARE = 1,
-    OBJECT_RIGHT_TRIANGLE = 2,
-    OBJECT_LONG_RIGHT_TRIANGLE = 3,
-    OBJECT_DIAMOND = 4,
 };
 
 class Object {
@@ -39,6 +32,7 @@ public:
     void setRenderSize(int w, int h);
     void setMoveable(bool moveable);
     void setInGrid(bool isInGrid);
+    void setTileType(TileType tileType);
 
     SDL_Point getPosition();
     std::list<Edge> getEdges();
@@ -49,6 +43,7 @@ public:
     SDL_Point getRenderSize();
     bool isMoveable();
     bool isInGrid();
+    TileType getTileType();
 
 protected:
     void addEdge(Edge edge);
@@ -59,6 +54,7 @@ protected:
 private:
     SDL_Point _position = {0, 0};
     std::list<Edge> _edges;
+    TileType _tileType = TileType::EMPTY;
     
     ObjectDirection _direction = ObjectDirection::NORTH;
     Spritesheet* _objectSpritesheet;

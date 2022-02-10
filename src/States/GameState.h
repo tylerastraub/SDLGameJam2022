@@ -53,7 +53,8 @@ private:
     // The shop object
     std::unique_ptr<Shop> _shop = nullptr;
 
-    Object* _currentObjSelection = nullptr;
+    std::shared_ptr<Object> _currentObjSelection = nullptr;
+    ObjectClickable* _currentOC = nullptr;
 };
 
 #endif

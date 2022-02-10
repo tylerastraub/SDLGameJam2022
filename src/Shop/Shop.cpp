@@ -18,19 +18,19 @@ Shop::Shop() {
     _inventory[3]->setRenderSize(16, 16);
     _inventory[3]->setDrawShadows(false);
 
-    std::shared_ptr<ObjectClickable> squareButton = std::make_shared<ObjectClickable>(ObjectType::OBJECT_SQUARE);
+    std::shared_ptr<ObjectClickable> squareButton = std::make_shared<ObjectClickable>(TileType::SQUARE);
     squareButton->setClickRect({0, 0, 24, 24});
     squareButton->setPosition(-32, 0 + 16 + 12);
     _objectBuyButtons.emplace_back(squareButton);
-    std::shared_ptr<ObjectClickable> rightTriangleButton = std::make_shared<ObjectClickable>(ObjectType::OBJECT_RIGHT_TRIANGLE);
+    std::shared_ptr<ObjectClickable> rightTriangleButton = std::make_shared<ObjectClickable>(TileType::RIGHT_TRIANGLE_NORTH);
     rightTriangleButton->setClickRect({0, 0, 24, 24});
     rightTriangleButton->setPosition(-32, 28 + 16 + 12);
     _objectBuyButtons.emplace_back(rightTriangleButton);
-    std::shared_ptr<ObjectClickable> longRightTriangleButton = std::make_shared<ObjectClickable>(ObjectType::OBJECT_LONG_RIGHT_TRIANGLE);
+    std::shared_ptr<ObjectClickable> longRightTriangleButton = std::make_shared<ObjectClickable>(TileType::LONG_RIGHT_TRIANGLE_NORTH);
     longRightTriangleButton->setClickRect({0, 0, 24, 24});
     longRightTriangleButton->setPosition(-32, 56 + 16 + 12);
     _objectBuyButtons.emplace_back(longRightTriangleButton);
-    std::shared_ptr<ObjectClickable> diamondButton = std::make_shared<ObjectClickable>(ObjectType::OBJECT_DIAMOND);
+    std::shared_ptr<ObjectClickable> diamondButton = std::make_shared<ObjectClickable>(TileType::DIAMOND);
     diamondButton->setClickRect({0, 0, 24, 24});
     diamondButton->setPosition(-32, 84 + 16 + 12);
     _objectBuyButtons.emplace_back(diamondButton);
