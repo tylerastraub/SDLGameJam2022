@@ -1,6 +1,7 @@
 #include "GameState.h"
 #include "Goal.h"
 #include "ShopButton.h"
+#include "LevelLoader.h"
 
 #include <iostream>
 #include <chrono>
@@ -8,10 +9,10 @@
 
 /**
  * TODO:
- * - Add level class that loads levels from file and creates proper tilemap with start, goal, etc...
+ * - Fix bug where hitting right triangle with straight shot will result in wrong angle
  * - Drag to aim shot
- * - Actually create levels lol
  * - Add next level button
+ * - Actually create levels lol
  * - IF HAVE TIME - Add sound + menu
  */
 
@@ -23,22 +24,24 @@ void GameState::init() {
         (float) renderSize.x / (float) gameSize.x, (float) renderSize.y / (float) gameSize.y);
 
     // Tilemap init
-    std::vector<std::vector<int>> testMap = {
-        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        {1, 3, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1},
-        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 4, 0, 0, 1},
-        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 2, 0, 0, 0, 0, 7, 0, 0, 12, 0, 0, 0, 6, 0, 11, 0, 0, 0, 1},
-        {1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 1},
-        {1, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 1, 1, 1, 1, 2, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 1, 1, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 0, 5, 1},
-        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-    };
-    _tilemap = std::make_unique<Tilemap>(getTileset(), testMap);
-    _defaultTilemap = testMap;
+    // std::vector<std::vector<int>> testMap = {
+    //     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    //     {1, 3, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1},
+    //     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    //     {1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 4, 0, 0, 1},
+    //     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    //     {1, 2, 0, 0, 0, 0, 7, 0, 0, 12, 0, 0, 0, 6, 0, 11, 0, 0, 0, 1},
+    //     {1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    //     {1, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 1},
+    //     {1, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    //     {1, 1, 1, 1, 1, 2, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    //     {1, 1, 1, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 0, 5, 1},
+    //     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+    // };
+
+    std::vector<std::vector<int>> levelMap = LevelLoader::loadLevel("res/level/test_level.txt");
+    _tilemap = std::make_unique<Tilemap>(getTileset(), levelMap);
+    _defaultTilemap = levelMap;
     _grid = std::make_unique<Grid>(_tilemap->getGrid());
 
     // Shot init

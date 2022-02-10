@@ -45,6 +45,7 @@ private:
 
     Projectile* _shot = nullptr;
     SDL_Point _shotStart = {336, 180};
+    SDL_Point _shotTarget = {0, 0};
 
     // Offset used for rendering. Shifts entire screen
     SDL_Point _renderOffset = {0, -12};

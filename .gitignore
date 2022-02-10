@@ -1,5 +1,6 @@
 # Directories
 build
 .VSCodeCounter
+.vscode
 
 # Individual files
