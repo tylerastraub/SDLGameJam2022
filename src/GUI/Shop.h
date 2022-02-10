@@ -39,7 +39,7 @@ private:
     // Buttons for buying objects
     std::list<std::shared_ptr<Clickable>> _objectBuyButtons;
     // How much money is available to spend
-    int _money = 0;
+    int _money = 3;
 };
 
 #endif

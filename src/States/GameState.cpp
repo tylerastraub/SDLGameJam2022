@@ -8,9 +8,9 @@
 
 /**
  * TODO:
- * - Add reset button to reset level
  * - Add level class that loads levels from file and creates proper tilemap with start, goal, etc...
  * - Add text
+ * - Add shop currency
  * - Actually create levels lol
  * - IF HAVE TIME - Add sound + menu
  */
@@ -291,6 +291,10 @@ void GameState::render() {
     // Render shop
     if(_shop->isOpen()) {
         _shop->render(getRenderer(), _renderOffset.x, _renderOffset.y);
+        Text* smallText = getText(TextSize::SMALL);
+        smallText->setPos(13, 14);
+        smallText->setString(std::to_string(_shop->getMoney()));
+        smallText->draw(_renderOffset.x, _renderOffset.y);
     }
 
     // Render clickables

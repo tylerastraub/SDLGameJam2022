@@ -2,8 +2,15 @@
 #define STATE_H
 
 #include "Spritesheet.h"
+#include "Text.h"
 
 #include <SDL.h>
+
+enum TextSize {
+    SMALL = 0,
+    MEDIUM = 1,
+    LARGE = 2,
+};
 
 class State {
 public:
@@ -22,6 +29,7 @@ public:
     void setRenderScale(int scale);
     void setRenderer(SDL_Renderer* renderer);
     void setTileset(Spritesheet* tileset);
+    void setText(TextSize size, Text* text);
 
     State* getNextState();
     SDL_Renderer* getRenderer();
@@ -29,6 +37,7 @@ public:
     SDL_Point getGameSize();
     SDL_Point getRenderSize();
     int getRenderScale();
+    Text* getText(TextSize size);
 
 protected:
 
@@ -40,6 +49,11 @@ private:
     SDL_Point _gameSize;
     SDL_Point _renderSize;
     int _renderScale;
+    
+    // Text
+    Text* _smallText = nullptr;
+    Text* _mediumText = nullptr;
+    Text* _largeText = nullptr;
 };
 
 #endif

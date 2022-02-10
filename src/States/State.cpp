@@ -24,6 +24,22 @@ void State::setTileset(Spritesheet* tileset) {
     _tileset = tileset;
 }
 
+void State::setText(TextSize size, Text* text) {
+    switch(size) {
+        case TextSize::SMALL:
+            _smallText = text;
+            break;
+        case TextSize::MEDIUM:
+            _mediumText = text;
+            break;
+        case TextSize::LARGE:
+            _largeText = text;
+            break;
+        default:
+            break;
+    }
+}
+
 State* State::getNextState() {
     return _nextState;
 }
@@ -46,4 +62,21 @@ SDL_Point State::getRenderSize() {
 
 int State::getRenderScale() {
     return _renderScale;
+}
+
+Text* State::getText(TextSize size) {
+    switch(size) {
+        case TextSize::SMALL:
+            return _smallText;
+            break;
+        case TextSize::MEDIUM:
+            return _mediumText;
+            break;
+        case TextSize::LARGE:
+            return _largeText;
+            break;
+        default:
+            return nullptr;
+            break;
+    }
 }

@@ -9,6 +9,7 @@
 #include "Clickable.h"
 #include "Shop.h"
 #include "ResetButton.h"
+#include "Text.h"
 
 #include <memory>
 

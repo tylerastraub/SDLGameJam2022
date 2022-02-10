@@ -64,6 +64,9 @@ bool GameLoop::init() {
                         _currentState->setRenderSize(GAME_WIDTH * RENDER_SCALE, GAME_HEIGHT * RENDER_SCALE);
                         _currentState->setRenderScale(RENDER_SCALE);
                         _currentState->setTileset(_tileSpritesheet.get());
+                        _currentState->setText(TextSize::SMALL, _smallText.get());
+                        _currentState->setText(TextSize::MEDIUM, _mediumText.get());
+                        _currentState->setText(TextSize::LARGE, _largeText.get());
                         _currentState->init();
                         std::cout << "Success!" << std::endl;
                         gameInitSuccessful = true;
@@ -78,10 +81,17 @@ bool GameLoop::init() {
 
 bool GameLoop::loadResources() {
     _tileSpritesheet = std::make_unique<Spritesheet>();
-    if(!_tileSpritesheet->load(_renderer, "res/tileset.png")) {
-        std::cout << "Error: failed to load 'res/tileset.png'!" << std::endl;
+    if(!_tileSpritesheet->load(_renderer, "res/sprite/tileset.png")) {
+        std::cout << "Error: failed to load 'res/sprite/tileset.png'!" << std::endl;
         return false;
     }
+    
+    _smallText = std::make_unique<Text>(_renderer);
+    if(!_smallText->load(_fontPath, _smallTextSize)) return false;
+    _mediumText = std::make_unique<Text>(_renderer);
+    if(!_mediumText->load(_fontPath, _mediumTextSize)) return false;
+    _largeText = std::make_unique<Text>(_renderer);
+    if(!_largeText->load(_fontPath, _largeTextSize)) return false;
 
     return true;
 }
@@ -119,6 +129,9 @@ void GameLoop::startLoop() {
             _currentState->setRenderSize(GAME_WIDTH * RENDER_SCALE, GAME_HEIGHT * RENDER_SCALE);
             _currentState->setRenderScale(RENDER_SCALE);
             _currentState->setTileset(_tileSpritesheet.get());
+            _currentState->setText(TextSize::SMALL, _smallText.get());
+            _currentState->setText(TextSize::MEDIUM, _mediumText.get());
+            _currentState->setText(TextSize::LARGE, _largeText.get());
             _currentState->init();
         }
 

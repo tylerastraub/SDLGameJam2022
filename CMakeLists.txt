@@ -27,6 +27,7 @@ set(SOURCE_INCLUDES
     ${PROJECT_SOURCE_DIR}/src/Entities
     ${PROJECT_SOURCE_DIR}/src/Render
     ${PROJECT_SOURCE_DIR}/src/GUI
+    ${PROJECT_SOURCE_DIR}/src/FileIO
     )
 set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/main.cpp
@@ -48,12 +49,14 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/Entities/Projectile.cpp
     ${PROJECT_SOURCE_DIR}/src/Entities/Goal.cpp
     ${PROJECT_SOURCE_DIR}/src/Render/Spritesheet.cpp
+    ${PROJECT_SOURCE_DIR}/src/Render/Text.cpp
     ${PROJECT_SOURCE_DIR}/src/GUI/Clickable.cpp
     ${PROJECT_SOURCE_DIR}/src/GUI/Button.cpp
     ${PROJECT_SOURCE_DIR}/src/GUI/ShopButton.cpp
     ${PROJECT_SOURCE_DIR}/src/GUI/ObjectClickable.cpp
     ${PROJECT_SOURCE_DIR}/src/GUI/Shop.cpp
     ${PROJECT_SOURCE_DIR}/src/GUI/ResetButton.cpp
+    ${PROJECT_SOURCE_DIR}/src/FileIO/FileIO.cpp
     )
 
 if(WIN32)
