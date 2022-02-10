@@ -26,7 +26,7 @@ set(SOURCE_INCLUDES
     ${PROJECT_SOURCE_DIR}/src/Collision
     ${PROJECT_SOURCE_DIR}/src/Entities
     ${PROJECT_SOURCE_DIR}/src/Render
-    ${PROJECT_SOURCE_DIR}/src/Shop
+    ${PROJECT_SOURCE_DIR}/src/GUI
     )
 set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/main.cpp
@@ -34,6 +34,7 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/States/State.cpp
     ${PROJECT_SOURCE_DIR}/src/States/GameState.cpp
     ${PROJECT_SOURCE_DIR}/src/Input/Mouse.cpp
+    ${PROJECT_SOURCE_DIR}/src/Input/Keyboard.cpp
     ${PROJECT_SOURCE_DIR}/src/Level/Tilemap.cpp
     ${PROJECT_SOURCE_DIR}/src/Level/Grid.cpp
     ${PROJECT_SOURCE_DIR}/src/Level/Object.cpp
@@ -47,11 +48,11 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/Entities/Projectile.cpp
     ${PROJECT_SOURCE_DIR}/src/Entities/Goal.cpp
     ${PROJECT_SOURCE_DIR}/src/Render/Spritesheet.cpp
-    ${PROJECT_SOURCE_DIR}/src/Shop/Clickable.cpp
-    ${PROJECT_SOURCE_DIR}/src/Shop/Button.cpp
-    ${PROJECT_SOURCE_DIR}/src/Shop/ShopButton.cpp
-    ${PROJECT_SOURCE_DIR}/src/Shop/ObjectClickable.cpp
-    ${PROJECT_SOURCE_DIR}/src/Shop/Shop.cpp
+    ${PROJECT_SOURCE_DIR}/src/GUI/Clickable.cpp
+    ${PROJECT_SOURCE_DIR}/src/GUI/Button.cpp
+    ${PROJECT_SOURCE_DIR}/src/GUI/ShopButton.cpp
+    ${PROJECT_SOURCE_DIR}/src/GUI/ObjectClickable.cpp
+    ${PROJECT_SOURCE_DIR}/src/GUI/Shop.cpp
     )
 
 if(WIN32)

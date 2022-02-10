@@ -16,6 +16,7 @@ public:
     void render(int xOffset, int yOffset) override {};
 
     void resetDefaultPosition();
+    void rotateRight();
 
     void setDefaultPosition(int x, int y);
     void clearObject();

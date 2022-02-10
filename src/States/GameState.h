@@ -27,6 +27,8 @@ public:
 private:
     std::unique_ptr<Mouse> _mouse = nullptr;
     std::unique_ptr<Tilemap> _tilemap = nullptr;
+    // The base for the tilemap. Used for resetting so we remember what OG tilemap looked like
+    std::unique_ptr<Tilemap> _defaultTilemap = nullptr;
     std::unique_ptr<Grid> _grid = nullptr;
     CollisionDetector _collisionDetector;
 
@@ -55,6 +57,10 @@ private:
 
     std::shared_ptr<Object> _currentObjSelection = nullptr;
     ObjectClickable* _currentOC = nullptr;
+
+    // Keyboard
+    bool _lastFramePressingR = false;
+    bool _pressingR = false;
 };
 
 #endif

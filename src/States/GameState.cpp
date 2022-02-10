@@ -8,7 +8,6 @@
 
 /**
  * TODO:
- * - Add ability to rotate objects before placing
  * - Add reset button to reset level
  * - Add level class that loads levels from file and creates proper tilemap with start, goal, etc...
  * - Add text
@@ -28,18 +27,18 @@ void GameState::init() {
         {1, 3, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1},
         {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
         {1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 4, 0, 0, 1},
-        {1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 0, 2, 0, 0, 0, 7, 0, 0, 12, 0, 0, 0, 6, 0, 11, 0, 0, 0, 1},
-        {1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 1},
-        {1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 0, 0, 0, 0, 0, 2, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 10, 0, 0, 0, 0, 5, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 2, 0, 0, 0, 0, 7, 0, 0, 12, 0, 0, 0, 6, 0, 11, 0, 0, 0, 1},
+        {1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 1},
+        {1, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 1, 1, 1, 1, 2, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 1, 1, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 0, 5, 1},
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
     };
     _tilemap = std::make_unique<Tilemap>(getTileset(), testMap);
+    _defaultTilemap = std::make_unique<Tilemap>(getTileset(), testMap);
     _grid = std::make_unique<Grid>(_tilemap->getGrid());
-    _tilemap->printTilemap();
 
     // Shot init
     _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _tilemap->getStart(), _mouse->getMousePos(), _numOfGuideLineBounces);
@@ -57,7 +56,11 @@ void GameState::init() {
     _clickables.emplace_back(shopButton);
 }
 
-void GameState::handleInput() {}
+void GameState::handleInput() {
+    _lastFramePressingR = _pressingR;
+    const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
+    _pressingR = currentKeyStates[SDL_SCANCODE_R];
+}
 
 void GameState::handleMouseInput(SDL_Event e) {
     if(e.type == SDL_MOUSEMOTION) {
@@ -160,6 +163,12 @@ void GameState::tick(float timescale) {
             _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _tilemap->getStart(), _mouse->getMousePos(), _numOfGuideLineBounces);
         }
         else {
+            if(_pressingR && !_lastFramePressingR) {
+                _currentOC->rotateRight();
+                _currentObjSelection = _currentOC->getObject();
+                _currentObjSelection->setInGrid(true);
+                _currentObjSelection->setObjectSpritesheet(getTileset());
+            }
             _currentObjSelection->setPosition(_mouse->getMouseX() - _grid->getTileSize() / 2,
                 _mouse->getMouseY() - _grid->getTileSize() / 2);
         }
@@ -236,6 +245,11 @@ void GameState::render() {
             ((_currentObjSelection->getPosition().y - _grid->getTileSize() / 2 + _grid->getTileSize() - 1) & -_grid->getTileSize()) + _renderOffset.y,
              _currentObjSelection->getNaturalSize().x,
              _currentObjSelection->getNaturalSize().y};
+        if(_currentObjSelection->getTileType() == TileType::LONG_RIGHT_TRIANGLE_NORTH ||
+            _currentObjSelection->getTileType() == TileType::LONG_RIGHT_TRIANGLE_SOUTH) {
+            rect.w = _currentObjSelection->getNaturalSize().y;
+            rect.h = _currentObjSelection->getNaturalSize().x;
+        }
         if(_tilemap->canPlaceObject(_currentObjSelection->getTileType(), (rect.x + 16) / _grid->getTileSize(), (rect.y + 16) / _grid->getTileSize())) {
             SDL_SetRenderDrawColor(getRenderer(), 0x00, 0x00, 0xFF, 0x90);
         }
