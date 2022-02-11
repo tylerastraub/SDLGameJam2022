@@ -4,3 +4,6 @@ build
 .vscode
 
 # Individual files
+
+# File types
+*.pal

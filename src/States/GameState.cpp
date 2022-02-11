@@ -42,7 +42,11 @@ void GameState::init() {
     _levels = {
         {"res/level/level1.txt", {1, 3}},
         {"res/level/level2.txt", {2, 3}},
+        {"res/level/level3.txt", {3, 5}},
+        {"res/level/level4.txt", {3, 6}},
+        {"res/level/level5.txt", {4, 10}},
     };
+    _currentLevelIndex = _levels.size() - 1;
     std::vector<std::vector<int>> levelMap = LevelLoader::loadLevel(_levels[_currentLevelIndex].first);
     _tilemap = std::make_unique<Tilemap>(getTileset(), levelMap);
     _defaultTilemap = levelMap;
