@@ -10,6 +10,7 @@
 #include "Shop.h"
 #include "ResetButton.h"
 #include "Text.h"
+#include "NextLevelButton.h"
 
 #include <memory>
 
@@ -25,10 +26,14 @@ public:
     void render() override;
 
     void addEntity(std::shared_ptr<Entity> entity);
+    void loadNextLevel();
 
 private:
     std::unique_ptr<Mouse> _mouse = nullptr;
     bool _mouseIsAiming = false;
+
+    std::vector<std::string> _levels;
+    int _currentLevelIndex = 0;
 
     std::unique_ptr<Tilemap> _tilemap = nullptr;
     // The base for the tilemap. Used for resetting so we remember what OG tilemap looked like
@@ -61,6 +66,8 @@ private:
     std::unique_ptr<Shop> _shop = nullptr;
     // The reset button
     std::shared_ptr<ResetButton> _resetButton = nullptr;
+    // The next level button
+    std::shared_ptr<NextLevelButton> _nextLevelButton = nullptr;
 
     std::shared_ptr<Object> _currentObjSelection = nullptr;
     ObjectClickable* _currentOC = nullptr;

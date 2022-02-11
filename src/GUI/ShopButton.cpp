@@ -18,6 +18,12 @@ void ShopButton::onClick() {
 }
 
 void ShopButton::render(int xOffset, int yOffset) {
+    if(!_shop->isOpen()) {
+        setPosition(4, getPosition().y);
+    }
+    else {
+        setPosition(4 + _shop->getWidth(), getPosition().y);
+    }
     Spritesheet* s = getSpritesheet();
     s->setIsAnimated(false);
     s->setIsLooped(false);

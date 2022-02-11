@@ -10,7 +10,6 @@
 
 /**
  * TODO:
- * - Drag to aim shot
  * - Add next level button
  * - Actually create levels lol
  * - IF HAVE TIME - Add sound + menu
@@ -39,6 +38,10 @@ void GameState::init() {
     //     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
     // };
 
+    // Load levels
+    _levels = {
+        "res/level/test_level.txt"
+    };
     std::vector<std::vector<int>> levelMap = LevelLoader::loadLevel("res/level/test_level.txt");
     _tilemap = std::make_unique<Tilemap>(getTileset(), levelMap);
     _defaultTilemap = levelMap;
@@ -47,7 +50,7 @@ void GameState::init() {
     _shotTarget = {_shotStart.x, 0};
 
     // Shot init
-    _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _shotTarget, _numOfGuideLineBounces);
+    _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _shotTarget, 0);
     _shotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _shotTarget, _numOfBounces);
 
     // Shop init
@@ -64,11 +67,18 @@ void GameState::init() {
     shopButton->setSpritesheet(getTileset());
     shopButton->setShop(_shop.get());
     _clickables.emplace_back(shopButton);
+    
     _resetButton = std::make_shared<ResetButton>();
     _resetButton->setPosition(24, 16);
     _resetButton->setSpritesheet(getTileset());
     _resetButton->setShop(_shop.get());
     _clickables.emplace_back(_resetButton);
+
+    _nextLevelButton = std::make_shared<NextLevelButton>();
+    _nextLevelButton->setPosition(44, 16);
+    _nextLevelButton->setSpritesheet(getTileset());
+    _nextLevelButton->setShop(_shop.get());
+    _clickables.emplace_back(_nextLevelButton);
 }
 
 void GameState::handleInput() {
@@ -111,6 +121,20 @@ void GameState::handleMouseInput(SDL_Event e) {
 void GameState::tick(float timescale) {
     if(!_mouse->isLeftButtonDown()) {
         _mouseIsAiming = false;
+        _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _shotTarget, 0);
+    }
+
+    if(_resetButton->requestsReset()) {
+        _resetButton->setsRequestsReset(false);
+        _tilemap = std::make_unique<Tilemap>(getTileset(), _defaultTilemap);
+        _grid = std::make_unique<Grid>(_tilemap->getGrid());
+        _shop->resetMoney();
+        _shotTarget = {_shotStart.x, 0};
+        _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _shotTarget, 0);
+        if(_shot) _shot->kill();
+        _shot = nullptr;
+        _currentObjSelection = nullptr;
+        _currentOC = nullptr;
     }
 
     if(_mouse->isLeftButtonDown() && !_currentObjSelection) {
@@ -125,24 +149,14 @@ void GameState::tick(float timescale) {
         }
     }
 
-    if(_resetButton->requestsReset()) {
-        _resetButton->setsRequestsReset(false);
-        _tilemap = std::make_unique<Tilemap>(getTileset(), _defaultTilemap);
-        _grid = std::make_unique<Grid>(_tilemap->getGrid());
-        _shop->resetMoney();
-        _shotTarget = {_shotStart.x, 0};
-        _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _shotTarget, _numOfGuideLineBounces);
-        if(_shot) _shot->kill();
-        _shot = nullptr;
-        _currentObjSelection = nullptr;
-        _currentOC = nullptr;
-    }
-
     for(auto ent : _grid->getEntities()) {
         ent->tick(timescale);
         if(ent->getEntityType() == EntityType::GOAL_ENTITY) {
             Goal g = *((Goal*) ent.get());
-            if(g.isHit() && _shot) _shot->kill();
+            if(g.isHit()){
+                if(_shot) _shot->kill();
+                _nextLevelButton->setEnabled(true);
+            } 
         }
     }
 
@@ -156,7 +170,7 @@ void GameState::tick(float timescale) {
             _collisionDetector.checkForShotEntityCollisions(_shot, _grid->getEntities());
         }
     }
-    if(_mouse->isRightButtonDown()) {
+    if(_mouse->isRightButtonDown() && !_nextLevelButton->isEnabled()) {
         if(_shot) delete _shot;
         _shotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _shotTarget, _numOfBounces);
         auto s = _shotPath.begin();
@@ -199,13 +213,13 @@ void GameState::tick(float timescale) {
                     _currentObjSelection->getTileType());
                 _currentObjSelection->setMoveable(false);
             }
+            else {
+                _shop->setMoney(_shop->getMoney() + 1);
+            }
             _currentObjSelection = nullptr;
             if(_currentOC) _currentOC->clearObject();
             _currentOC = nullptr;
-            SDL_Point shotDelta = {_shotTarget.x - _shotStart.x, _shotTarget.y - _shotStart.y};
-            float magnitude = (float) _grid->getGridWidth() * _grid->getTileSize() / std::hypot(shotDelta.x, shotDelta.y);
-            _shotTarget = {(int) (_shotTarget.x * magnitude), (int) (_shotTarget.y * magnitude)};
-            _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _shotTarget, _numOfGuideLineBounces);
+            _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _shotTarget, 0);
         }
         else {
             if(_pressingR && !_lastFramePressingR) {
@@ -217,6 +231,10 @@ void GameState::tick(float timescale) {
             _currentObjSelection->setPosition(_mouse->getMouseX() - _grid->getTileSize() / 2,
                 _mouse->getMouseY() - _grid->getTileSize() / 2);
         }
+    }
+
+    if(_nextLevelButton->hasBeenClicked()) {
+        loadNextLevel();
     }
 
     _renderGrid = _shop->isOpen();
@@ -345,4 +363,21 @@ void GameState::render() {
     // SDL_RenderFillRect(getRenderer(), &mouseRect);
 
     SDL_RenderPresent(getRenderer());
+}
+
+void GameState::loadNextLevel() {
+    ++_currentLevelIndex;
+    if(_currentLevelIndex >= _levels.size()) {
+        std::cout << "Congratulations! You beat every level available." << std::endl;
+        _currentLevelIndex = _levels.size() - 1;
+    }
+    std::vector<std::vector<int>> levelMap = LevelLoader::loadLevel(_levels[_currentLevelIndex]);
+    _tilemap = std::make_unique<Tilemap>(getTileset(), levelMap);
+    _defaultTilemap = levelMap;
+    _grid = std::make_unique<Grid>(_tilemap->getGrid());
+    _shotStart = _tilemap->getStart();
+    _shotTarget = {_shotStart.x, 0};
+    _shop->resetMoney();
+    _nextLevelButton->setEnabled(false);
+    _shop->setOpen(false);
 }
