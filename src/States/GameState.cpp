@@ -96,6 +96,7 @@ void GameState::handleInput() {
 }
 
 void GameState::handleMouseInput(SDL_Event e) {
+    _lastFrameRightClickDown = _mouse->isRightButtonDown();
     if(e.type == SDL_MOUSEMOTION) {
         int x = 0;
         int y = 0;
@@ -179,7 +180,7 @@ void GameState::tick(float timescale) {
             _collisionDetector.checkForShotEntityCollisions(_shot, _grid->getEntities());
         }
     }
-    if(_mouse->isRightButtonDown() && !_nextLevelButton->isEnabled()) {
+    if(_mouse->isRightButtonDown() && !_nextLevelButton->isEnabled() && !_lastFrameRightClickDown) {
         if(_shot) delete _shot;
         _shotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _shotTarget, _numOfBounces);
         auto s = _shotPath.begin();

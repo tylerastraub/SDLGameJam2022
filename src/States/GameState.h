@@ -79,6 +79,7 @@ private:
     ObjectClickable* _currentOC = nullptr;
 
     // Keyboard
+    bool _lastFrameRightClickDown = false;
     bool _lastFramePressingR = false;
     bool _pressingR = false;
 
