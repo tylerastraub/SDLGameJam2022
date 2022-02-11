@@ -32,7 +32,13 @@ private:
     std::unique_ptr<Mouse> _mouse = nullptr;
     bool _mouseIsAiming = false;
 
-    std::vector<std::string> _levels;
+    /**
+     * @brief Container containing all levels to be played
+     * 
+     * @param string The filepath for the level to be loaded
+     * @param int The shop currency for that particular level
+     */
+    std::vector<std::pair<std::string, int>> _levels;
     int _currentLevelIndex = 0;
 
     std::unique_ptr<Tilemap> _tilemap = nullptr;
@@ -75,6 +81,8 @@ private:
     // Keyboard
     bool _lastFramePressingR = false;
     bool _pressingR = false;
+
+    bool _gameOver = false;
 
     bool _debug = false;
 };

@@ -40,7 +40,7 @@ void GameState::init() {
 
     // Load levels
     _levels = {
-        "res/level/test_level.txt"
+        {"res/level/test_level.txt", 1},
     };
     std::vector<std::vector<int>> levelMap = LevelLoader::loadLevel("res/level/test_level.txt");
     _tilemap = std::make_unique<Tilemap>(getTileset(), levelMap);
@@ -356,11 +356,22 @@ void GameState::render() {
     // Render potential drag and drop objects
     if(_currentObjSelection) _currentObjSelection->render(_renderOffset.x, _renderOffset.y);
 
-    // SDL_SetRenderDrawColor(getRenderer(), 0x00, 0xFF, 0xFF, 0x90);
-    // SDL_Rect mouseRect = _mouse->getMouseGrabBox();
-    // mouseRect.x += _renderOffset.x;
-    // mouseRect.y += _renderOffset.y;
-    // SDL_RenderFillRect(getRenderer(), &mouseRect);
+    if(_gameOver) {
+        auto text = getText(TextSize::LARGE);
+        text->setString("Congratulations! You beat every level!");
+        text->setPos(getGameSize().x / 2 - text->getWidth() / 2 + 1,
+            getGameSize().y / 2 - text->getHeight() / 2 + 1);
+        text->draw(_renderOffset.x, _renderOffset.y, 0, 0, 0);
+        text->setPos(text->getPos().x - 1, text->getPos().y - 1);
+        text->draw(_renderOffset.x, _renderOffset.y);
+        text = getText(TextSize::MEDIUM);
+        text->setString("Press 'Esc' to quit");
+        text->setPos(getGameSize().x / 2 - text->getWidth() / 2 + 1,
+            getGameSize().y / 2 - text->getHeight() / 2 + 26);
+        text->draw(_renderOffset.x, _renderOffset.y, 0, 0, 0);
+        text->setPos(text->getPos().x - 1, text->getPos().y - 1);
+        text->draw(_renderOffset.x, _renderOffset.y);
+    }
 
     SDL_RenderPresent(getRenderer());
 }
@@ -368,16 +379,17 @@ void GameState::render() {
 void GameState::loadNextLevel() {
     ++_currentLevelIndex;
     if(_currentLevelIndex >= _levels.size()) {
-        std::cout << "Congratulations! You beat every level available." << std::endl;
-        _currentLevelIndex = _levels.size() - 1;
+        _gameOver = true;
     }
-    std::vector<std::vector<int>> levelMap = LevelLoader::loadLevel(_levels[_currentLevelIndex]);
-    _tilemap = std::make_unique<Tilemap>(getTileset(), levelMap);
-    _defaultTilemap = levelMap;
-    _grid = std::make_unique<Grid>(_tilemap->getGrid());
-    _shotStart = _tilemap->getStart();
-    _shotTarget = {_shotStart.x, 0};
-    _shop->resetMoney();
-    _nextLevelButton->setEnabled(false);
-    _shop->setOpen(false);
+    else {
+        std::vector<std::vector<int>> levelMap = LevelLoader::loadLevel(_levels[_currentLevelIndex].first);
+        _tilemap = std::make_unique<Tilemap>(getTileset(), levelMap);
+        _defaultTilemap = levelMap;
+        _grid = std::make_unique<Grid>(_tilemap->getGrid());
+        _shotStart = _tilemap->getStart();
+        _shotTarget = {_shotStart.x, 0};
+        _shop->resetMoney();
+        _nextLevelButton->setEnabled(false);
+        _shop->setOpen(false);
+    }
 }

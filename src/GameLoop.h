@@ -38,9 +38,9 @@ private:
     const char * _fontPath = "res/font/Munro.ttf";
     int _smallTextSize = 10;
     std::unique_ptr<Text> _smallText = nullptr;
-    int _mediumTextSize = 14;
+    int _mediumTextSize = 16;
     std::unique_ptr<Text> _mediumText = nullptr;
-    int _largeTextSize = 18;
+    int _largeTextSize = 24;
     std::unique_ptr<Text> _largeText = nullptr;
 };
 
