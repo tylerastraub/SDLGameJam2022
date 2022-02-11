@@ -110,6 +110,18 @@ void CollisionDetector::checkForClickableAction(Mouse* mouse, std::list<std::sha
     }
 }
 
+bool CollisionDetector::mouseCollidingWithShot(Mouse* mouse, std::vector<SDL_Point> shot) {
+    SDL_Rect r = mouse->getMouseGrabBox();
+    SDL_Point shotStart = *shot.begin();
+    SDL_Point shotTarget = *(shot.end() - 1);
+    return (
+        linesAreIntersecting({r.x, r.y}, {r.x + r.w, r.y}, shotStart, shotTarget) ||
+        linesAreIntersecting({r.x + r.w, r.y}, {r.x + r.w, r.y + r.h}, shotStart, shotTarget) ||
+        linesAreIntersecting({r.x, r.y}, {r.x, r.y + r.h}, shotStart, shotTarget) ||
+        linesAreIntersecting({r.x, r.y + r.h}, {r.x + r.w, r.y + r.h}, shotStart, shotTarget)
+        );
+}
+
 std::vector<SDL_Point> CollisionDetector::calculateLinePath(SDL_Point start, SDL_Point target) {
     std::vector<SDL_Point> points;
     int x0 = start.x;
@@ -244,8 +256,7 @@ SDL_Point CollisionDetector::calculateNextTargetAfterBounce(Grid grid, SDL_Point
     vecComponentW = {shotDX - vecComponentU.x, shotDY - vecComponentU.y};
     newVec = {vecComponentW.x - vecComponentU.x, vecComponentW.y - vecComponentU.y};
 
-
-    if(newVec.x != 0 && newVec.y != 0) magnitude = (float) grid.getGridWidth() * grid.getTileSize() / std::hypot(newVec.x, newVec.y);
+    if(newVec.x != 0 || newVec.y != 0) magnitude = (float) grid.getGridWidth() * grid.getTileSize() / std::hypot(newVec.x, newVec.y);
     return {(int) (shotEnd.x + newVec.x * magnitude), (int) (shotEnd.y + newVec.y * magnitude)};
 }
 

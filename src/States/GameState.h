@@ -28,6 +28,8 @@ public:
 
 private:
     std::unique_ptr<Mouse> _mouse = nullptr;
+    bool _mouseIsAiming = false;
+
     std::unique_ptr<Tilemap> _tilemap = nullptr;
     // The base for the tilemap. Used for resetting so we remember what OG tilemap looked like
     std::vector<std::vector<int>> _defaultTilemap;
@@ -66,6 +68,8 @@ private:
     // Keyboard
     bool _lastFramePressingR = false;
     bool _pressingR = false;
+
+    bool _debug = false;
 };
 
 #endif

@@ -27,6 +27,7 @@ public:
     int getMouseY();
     int getMouseDX();
     int getMouseDY();
+    SDL_Rect getMouseGrabBox();
     bool isLeftButtonDown();
     bool isRightButtonDown();
     bool mouseMoved();
@@ -34,6 +35,7 @@ public:
 private:
     SDL_Point _mousePos = {0, 0};
     SDL_Point _mouseDelta = {0, 0};
+    SDL_Rect _mouseGrabBox = {0, 0, 0, 0};
     bool _leftButtonDown = false;
     bool _rightButtonDown = false;
     bool _mouseMoved = false;

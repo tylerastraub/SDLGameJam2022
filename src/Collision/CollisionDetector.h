@@ -35,6 +35,8 @@ public:
 
     void checkForClickableAction(Mouse* mouse, std::list<std::shared_ptr<Clickable>> clickables);
 
+    bool mouseCollidingWithShot(Mouse* mouse, std::vector<SDL_Point> shot);
+
 private:
     /**
      * @brief Returns all points in a line given start and target coordinates. Note that if line's slop is less than y=x, start/target coordinates will reverse

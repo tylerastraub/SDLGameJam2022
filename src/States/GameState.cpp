@@ -6,10 +6,10 @@
 #include <iostream>
 #include <chrono>
 #include <algorithm>
+#include <cmath>
 
 /**
  * TODO:
- * - Fix bug where hitting right triangle with straight shot will result in wrong angle
  * - Drag to aim shot
  * - Add next level button
  * - Actually create levels lol
@@ -43,10 +43,12 @@ void GameState::init() {
     _tilemap = std::make_unique<Tilemap>(getTileset(), levelMap);
     _defaultTilemap = levelMap;
     _grid = std::make_unique<Grid>(_tilemap->getGrid());
+    _shotStart = _tilemap->getStart();
+    _shotTarget = {_shotStart.x, 0};
 
     // Shot init
-    _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _tilemap->getStart(), _mouse->getMousePos(), _numOfGuideLineBounces);
-    _shotPath = _collisionDetector.calculateShotPath(*_grid, _tilemap->getStart(), _mouse->getMousePos(), _numOfBounces);
+    _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _shotTarget, _numOfGuideLineBounces);
+    _shotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _shotTarget, _numOfBounces);
 
     // Shop init
     _shop = std::make_unique<Shop>();
@@ -107,8 +109,20 @@ void GameState::handleMouseInput(SDL_Event e) {
 }
 
 void GameState::tick(float timescale) {
-    if(_mouse->mouseMoved()) {
-        _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _tilemap->getStart(), _mouse->getMousePos(), _numOfGuideLineBounces);
+    if(!_mouse->isLeftButtonDown()) {
+        _mouseIsAiming = false;
+    }
+
+    if(_mouse->isLeftButtonDown() && !_currentObjSelection) {
+        SDL_Point mouseTarget = _mouse->getMousePos();
+        std::vector<SDL_Point> singleShot = _collisionDetector.calculateShotPath(*_grid, _shotStart, _shotTarget, 0);
+        if(_collisionDetector.mouseCollidingWithShot(_mouse.get(), singleShot) || _mouseIsAiming) {
+            _mouseIsAiming = true;
+            SDL_Point mouseDelta = {mouseTarget.x - _shotStart.x, mouseTarget.y - _shotStart.y};
+            float magnitude = (float) _grid->getGridWidth() * _grid->getTileSize() / std::hypot(mouseDelta.x, mouseDelta.y);
+            _shotTarget = {(int) (_shotStart.x + mouseDelta.x * magnitude), (int) (_shotStart.y + mouseDelta.y * magnitude)};
+            _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _shotTarget, _numOfGuideLineBounces);
+        }
     }
 
     if(_resetButton->requestsReset()) {
@@ -116,6 +130,8 @@ void GameState::tick(float timescale) {
         _tilemap = std::make_unique<Tilemap>(getTileset(), _defaultTilemap);
         _grid = std::make_unique<Grid>(_tilemap->getGrid());
         _shop->resetMoney();
+        _shotTarget = {_shotStart.x, 0};
+        _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _shotTarget, _numOfGuideLineBounces);
         if(_shot) _shot->kill();
         _shot = nullptr;
         _currentObjSelection = nullptr;
@@ -142,13 +158,15 @@ void GameState::tick(float timescale) {
     }
     if(_mouse->isRightButtonDown()) {
         if(_shot) delete _shot;
-        _shotPath = _collisionDetector.calculateShotPath(*_grid, _tilemap->getStart(), _mouse->getMousePos(), _numOfBounces);
+        _shotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _shotTarget, _numOfBounces);
         auto s = _shotPath.begin();
         _shot = new Projectile(s->x, s->y);
         _shot->setPath(_shotPath);
     }
-    _collisionDetector.checkForClickableAction(_mouse.get(), _clickables);
-    _collisionDetector.checkForClickableAction(_mouse.get(), _shop->getObjectBuyButtons());
+    if(!_mouseIsAiming) {
+        _collisionDetector.checkForClickableAction(_mouse.get(), _clickables);
+        _collisionDetector.checkForClickableAction(_mouse.get(), _shop->getObjectBuyButtons());
+    }
     for(auto bb : _shop->getObjectBuyButtons()) {
         auto oc = (ObjectClickable*) bb.get();
         if(oc->getObject() != nullptr) {
@@ -184,7 +202,10 @@ void GameState::tick(float timescale) {
             _currentObjSelection = nullptr;
             if(_currentOC) _currentOC->clearObject();
             _currentOC = nullptr;
-            _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _tilemap->getStart(), _mouse->getMousePos(), _numOfGuideLineBounces);
+            SDL_Point shotDelta = {_shotTarget.x - _shotStart.x, _shotTarget.y - _shotStart.y};
+            float magnitude = (float) _grid->getGridWidth() * _grid->getTileSize() / std::hypot(shotDelta.x, shotDelta.y);
+            _shotTarget = {(int) (_shotTarget.x * magnitude), (int) (_shotTarget.y * magnitude)};
+            _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _shotTarget, _numOfGuideLineBounces);
         }
         else {
             if(_pressingR && !_lastFramePressingR) {
@@ -245,17 +266,21 @@ void GameState::render() {
                     break;
             }
             // DEBUG: draw all collision edges (hitboxes)
-            // std::list<Edge> edges = _grid->getEdges(x, y);
-            // for(Edge e : edges) {
-            //     SDL_SetRenderDrawColor(getRenderer(), 0xFF, 0xFF, 0x00, 0xAF);
-            //     SDL_RenderDrawLine(getRenderer(), e.p1.x + _renderOffset.x, e.p1.y + _renderOffset.y, e.p2.x + _renderOffset.x, e.p2.y + _renderOffset.y);
-            // }
+            if(_debug) {
+                std::list<Edge> edges = _grid->getEdges(x, y);
+                for(Edge e : edges) {
+                    SDL_SetRenderDrawColor(getRenderer(), 0xFF, 0xFF, 0x00, 0xAF);
+                    SDL_RenderDrawLine(getRenderer(), e.p1.x + _renderOffset.x, e.p1.y + _renderOffset.y, e.p2.x + _renderOffset.x, e.p2.y + _renderOffset.y);
+                }
+            }
         }
     }
 
     // Render objects
-    for(auto obj : _grid->getObjects()) {
-        if(obj.get() != _currentObjSelection.get()) obj->render(_renderOffset.x, _renderOffset.y);
+    if(!_debug) {
+        for(auto obj : _grid->getObjects()) {
+            if(obj.get() != _currentObjSelection.get()) obj->render(_renderOffset.x, _renderOffset.y);
+        }
     }
     // Render entities
     for(auto ent : _grid->getEntities()) {
@@ -312,6 +337,12 @@ void GameState::render() {
 
     // Render potential drag and drop objects
     if(_currentObjSelection) _currentObjSelection->render(_renderOffset.x, _renderOffset.y);
+
+    // SDL_SetRenderDrawColor(getRenderer(), 0x00, 0xFF, 0xFF, 0x90);
+    // SDL_Rect mouseRect = _mouse->getMouseGrabBox();
+    // mouseRect.x += _renderOffset.x;
+    // mouseRect.y += _renderOffset.y;
+    // SDL_RenderFillRect(getRenderer(), &mouseRect);
 
     SDL_RenderPresent(getRenderer());
 }
