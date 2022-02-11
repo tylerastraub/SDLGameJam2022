@@ -10,9 +10,9 @@
 
 /**
  * TODO:
- * - Add next level button
  * - Actually create levels lol
  * - IF HAVE TIME - Add sound + menu
+ * - Fix shot so that instead of having to bump next shot start out a bit, it just goes one point forward on next line
  */
 
 void GameState::init() {
@@ -40,14 +40,16 @@ void GameState::init() {
 
     // Load levels
     _levels = {
-        {"res/level/test_level.txt", 1},
+        {"res/level/level1.txt", {1, 3}},
+        {"res/level/level2.txt", {2, 3}},
     };
-    std::vector<std::vector<int>> levelMap = LevelLoader::loadLevel("res/level/test_level.txt");
+    std::vector<std::vector<int>> levelMap = LevelLoader::loadLevel(_levels[_currentLevelIndex].first);
     _tilemap = std::make_unique<Tilemap>(getTileset(), levelMap);
     _defaultTilemap = levelMap;
     _grid = std::make_unique<Grid>(_tilemap->getGrid());
     _shotStart = _tilemap->getStart();
     _shotTarget = {_shotStart.x, 0};
+    _numOfBounces = _levels[_currentLevelIndex].second.second;
 
     // Shot init
     _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _shotTarget, 0);
@@ -60,6 +62,8 @@ void GameState::init() {
         ObjectClickable* oc = (ObjectClickable*) bb.get();
         oc->setShop(_shop.get());
     }
+    _shop->setStartingMoney(_levels[_currentLevelIndex].second.first);
+    _shop->resetMoney();
 
     // Clickables init
     std::shared_ptr<ShopButton> shopButton = std::make_shared<ShopButton>();
@@ -129,6 +133,7 @@ void GameState::tick(float timescale) {
         _tilemap = std::make_unique<Tilemap>(getTileset(), _defaultTilemap);
         _grid = std::make_unique<Grid>(_tilemap->getGrid());
         _shop->resetMoney();
+        _nextLevelButton->setEnabled(false);
         _shotTarget = {_shotStart.x, 0};
         _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _shotTarget, 0);
         if(_shot) _shot->kill();
@@ -177,7 +182,7 @@ void GameState::tick(float timescale) {
         _shot = new Projectile(s->x, s->y);
         _shot->setPath(_shotPath);
     }
-    if(!_mouseIsAiming) {
+    if(!_mouseIsAiming && !_currentObjSelection) {
         _collisionDetector.checkForClickableAction(_mouse.get(), _clickables);
         _collisionDetector.checkForClickableAction(_mouse.get(), _shop->getObjectBuyButtons());
     }
@@ -194,6 +199,7 @@ void GameState::tick(float timescale) {
     }
 
     if(_currentObjSelection) {
+        if(_shot) _shot->kill();
         // If object gets dropped
         if(!_mouse->isLeftButtonDown()) {
             // Using cool algorithm from https://stackoverflow.com/a/9194117
@@ -332,6 +338,17 @@ void GameState::render() {
         SDL_RenderDrawPoint(getRenderer(), point.x + _renderOffset.x, point.y + _renderOffset.y);
     }
 
+    // Render shot start
+    Spritesheet* s = getTileset();
+    s->setRenderWidth(7);
+    s->setRenderHeight(7);
+    s->setTileWidth(7);
+    s->setTileHeight(7);
+    s->setTileIndex(0, 2);
+    s->setIsAnimated(false);
+    s->setIsLooped(false);
+    s->render(_shotStart.x - 3 + _renderOffset.x, _shotStart.y - 3 + _renderOffset.y);
+
     // Render projectile
     if(_shot) {
         SDL_SetRenderDrawColor(getRenderer(), 0xFF, 0xFF, 0xFF, 0xFF);
@@ -356,21 +373,37 @@ void GameState::render() {
     // Render potential drag and drop objects
     if(_currentObjSelection) _currentObjSelection->render(_renderOffset.x, _renderOffset.y);
 
+    // Render controls text
+    Text* smallText = getText(TextSize::SMALL);
+    smallText->setString("LEFT CLICK LASER TO AIM SHOT/RIGHT CLICK TO SHOOT/'R' TO ROTATE PICKED UP OBJECT");
+    smallText->setPos(5, getGameSize().y - smallText->getHeight() + 9);
+    smallText->draw(_renderOffset.x, _renderOffset.y, 0, 0, 0);
+    smallText->setPos(4, getGameSize().y - smallText->getHeight() + 8);
+    smallText->draw(_renderOffset.x, _renderOffset.y);
+
+    // Render bounces text
+    Text* medText = getText(TextSize::MEDIUM);
+    medText->setString("BOUNCES: " + std::to_string(_numOfBounces));
+    medText->setPos(getGameSize().x - medText->getWidth() - 13, getGameSize().y - medText->getHeight() + 12);
+    medText->draw(_renderOffset.x, _renderOffset.y, 0, 0, 0);
+    medText->setPos(getGameSize().x - medText->getWidth() - 14, getGameSize().y - medText->getHeight() + 11);
+    medText->draw(_renderOffset.x, _renderOffset.y);
+
+    // Render game over text
     if(_gameOver) {
-        auto text = getText(TextSize::LARGE);
-        text->setString("Congratulations! You beat every level!");
-        text->setPos(getGameSize().x / 2 - text->getWidth() / 2 + 1,
-            getGameSize().y / 2 - text->getHeight() / 2 + 1);
-        text->draw(_renderOffset.x, _renderOffset.y, 0, 0, 0);
-        text->setPos(text->getPos().x - 1, text->getPos().y - 1);
-        text->draw(_renderOffset.x, _renderOffset.y);
-        text = getText(TextSize::MEDIUM);
-        text->setString("Press 'Esc' to quit");
-        text->setPos(getGameSize().x / 2 - text->getWidth() / 2 + 1,
-            getGameSize().y / 2 - text->getHeight() / 2 + 26);
-        text->draw(_renderOffset.x, _renderOffset.y, 0, 0, 0);
-        text->setPos(text->getPos().x - 1, text->getPos().y - 1);
-        text->draw(_renderOffset.x, _renderOffset.y);
+        Text* largeText = getText(TextSize::LARGE);
+        largeText->setString("Congratulations! You beat every level!");
+        largeText->setPos(getGameSize().x / 2 - largeText->getWidth() / 2 + 1,
+            getGameSize().y / 2 - largeText->getHeight() / 2 + 1);
+        largeText->draw(_renderOffset.x, _renderOffset.y, 0, 0, 0);
+        largeText->setPos(largeText->getPos().x - 1, largeText->getPos().y - 1);
+        largeText->draw(_renderOffset.x, _renderOffset.y);
+        medText->setString("Press 'Esc' to quit");
+        medText->setPos(getGameSize().x / 2 - medText->getWidth() / 2 + 1,
+            getGameSize().y / 2 - medText->getHeight() / 2 + 26);
+        medText->draw(_renderOffset.x, _renderOffset.y, 0, 0, 0);
+        medText->setPos(medText->getPos().x - 1, medText->getPos().y - 1);
+        medText->draw(_renderOffset.x, _renderOffset.y);
     }
 
     SDL_RenderPresent(getRenderer());
@@ -388,8 +421,10 @@ void GameState::loadNextLevel() {
         _grid = std::make_unique<Grid>(_tilemap->getGrid());
         _shotStart = _tilemap->getStart();
         _shotTarget = {_shotStart.x, 0};
-        _shop->resetMoney();
         _nextLevelButton->setEnabled(false);
         _shop->setOpen(false);
+        _shop->setStartingMoney(_levels[_currentLevelIndex].second.first);
+        _shop->resetMoney();
+        _numOfBounces = _levels[_currentLevelIndex].second.second;
     }
 }

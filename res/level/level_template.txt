@@ -1,0 +1,26 @@
+1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1
+1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1
+1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1
+1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1
+1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1
+1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1
+1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1
+1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1
+1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1
+1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1
+1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+
+0=Empty
+1=Square
+2=Right Triangle (Hypotonuse top right)
+3=Right Triangle (Hypotonuse bottom right)
+4=Right Triangle (Hypotonuse bottom left)
+5=Right Triangle (Hypotonuse top left)
+6=Diamond
+7=Long Right Triangle (Hypotonuse top right)
+8=Long Right Triangle (Hypotonuse bottom right)
+9=Long Right Triangle (Hypotonuse bottom left)
+10=Long Right Triangle (Hypotonuse top left)
+11=Goal
+12=Start

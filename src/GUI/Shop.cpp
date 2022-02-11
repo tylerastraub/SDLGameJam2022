@@ -98,6 +98,10 @@ void Shop::setMoney(int money) {
     _money = money;
 }
 
+void Shop::setStartingMoney(int startingMoney) {
+    _startingMoney = startingMoney;
+}
+
 bool Shop::isOpen() {
     return _opened;
 }

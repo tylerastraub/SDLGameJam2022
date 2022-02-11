@@ -36,9 +36,9 @@ private:
      * @brief Container containing all levels to be played
      * 
      * @param string The filepath for the level to be loaded
-     * @param int The shop currency for that particular level
+     * @param pair<int, int> The shop currency for that particular level + the number of bounces allowed
      */
-    std::vector<std::pair<std::string, int>> _levels;
+    std::vector<std::pair<std::string, std::pair<int, int>>> _levels;
     int _currentLevelIndex = 0;
 
     std::unique_ptr<Tilemap> _tilemap = nullptr;

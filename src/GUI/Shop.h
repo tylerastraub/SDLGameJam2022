@@ -20,6 +20,7 @@ public:
     void setOpen(bool open);
     void setSpritesheet(Spritesheet* spritesheet);
     void setMoney(int money);
+    void setStartingMoney(int startingMoney);
 
     bool isOpen();
     int getWidth();
