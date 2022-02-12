@@ -157,7 +157,11 @@ void GameState::tick(float timescale) {
         if(_collisionDetector.mouseCollidingWithShot(_mouse.get(), singleShot) || _mouseIsAiming) {
             _mouseIsAiming = true;
             SDL_Point mouseDelta = {mouseTarget.x - _shotStart.x, mouseTarget.y - _shotStart.y};
-            float magnitude = (float) _grid->getGridWidth() * _grid->getTileSize() / std::hypot(mouseDelta.x, mouseDelta.y);
+            float hypot = std::hypot(mouseDelta.x, mouseDelta.y);
+            float magnitude = 0.f;
+            if(hypot != 0) {
+                magnitude = (float) _grid->getGridWidth() * _grid->getTileSize() / hypot;
+            }
             _shotTarget = {(int) (_shotStart.x + mouseDelta.x * magnitude), (int) (_shotStart.y + mouseDelta.y * magnitude)};
             _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _shotTarget, _numOfGuideLineBounces);
         }

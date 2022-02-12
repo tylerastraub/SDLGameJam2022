@@ -27,7 +27,7 @@ private:
     // The logical height of the game
     const int GAME_HEIGHT = 360;
     // The render scale for the window
-    const int RENDER_SCALE = 4;
+    const int RENDER_SCALE = 2;
 
     bool _exitFlag = false;
 
