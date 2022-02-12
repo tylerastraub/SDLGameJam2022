@@ -10,8 +10,7 @@
 
 /**
  * TODO:
- * - Actually create levels lol
- * - IF HAVE TIME - Add sound + menu
+ * - Add sound + menu
  * - Fix shot so that instead of having to bump next shot start out a bit, it just goes one point forward on next line
  */
 
@@ -45,8 +44,14 @@ void GameState::init() {
         {"res/level/level3.txt", {3, 5}},
         {"res/level/level4.txt", {3, 6}},
         {"res/level/level5.txt", {4, 10}},
+        {"res/level/level6.txt", {3, 5}},
+        {"res/level/level7.txt", {5, 12}},
+        {"res/level/level8.txt", {3, 9}},
+        {"res/level/level9.txt", {2, 5}},
+        {"res/level/level10.txt", {2, 6}},
     };
-    _currentLevelIndex = _levels.size() - 1;
+    // DEBUG: for testing newest level
+    // _currentLevelIndex = _levels.size() - 1;
     std::vector<std::vector<int>> levelMap = LevelLoader::loadLevel(_levels[_currentLevelIndex].first);
     _tilemap = std::make_unique<Tilemap>(getTileset(), levelMap);
     _defaultTilemap = levelMap;
@@ -139,7 +144,6 @@ void GameState::tick(float timescale) {
         _grid = std::make_unique<Grid>(_tilemap->getGrid());
         _shop->resetMoney();
         _nextLevelButton->setEnabled(false);
-        _shotTarget = {_shotStart.x, 0};
         _guideLineShotPath = _collisionDetector.calculateShotPath(*_grid, _shotStart, _shotTarget, 0);
         if(_shot) _shot->kill();
         _shot = nullptr;
@@ -380,10 +384,10 @@ void GameState::render() {
 
     // Render controls text
     Text* smallText = getText(TextSize::SMALL);
-    smallText->setString("LEFT CLICK LASER TO AIM SHOT/RIGHT CLICK TO SHOOT/'R' TO ROTATE PICKED UP OBJECT");
-    smallText->setPos(5, getGameSize().y - smallText->getHeight() + 9);
+    smallText->setString("LEFT CLICK LASER TO AIM SHOT/RIGHT CLICK TO SHOOT/'R' TO ROTATE PICKED UP OBJECT/'ESC' TO QUIT");
+    smallText->setPos(5, getGameSize().y - smallText->getHeight() + 10);
     smallText->draw(_renderOffset.x, _renderOffset.y, 0, 0, 0);
-    smallText->setPos(4, getGameSize().y - smallText->getHeight() + 8);
+    smallText->setPos(4, getGameSize().y - smallText->getHeight() + 9);
     smallText->draw(_renderOffset.x, _renderOffset.y);
 
     // Render bounces text
@@ -392,6 +396,13 @@ void GameState::render() {
     medText->setPos(getGameSize().x - medText->getWidth() - 13, getGameSize().y - medText->getHeight() + 12);
     medText->draw(_renderOffset.x, _renderOffset.y, 0, 0, 0);
     medText->setPos(getGameSize().x - medText->getWidth() - 14, getGameSize().y - medText->getHeight() + 11);
+    medText->draw(_renderOffset.x, _renderOffset.y);
+
+    // Render current level
+    medText->setString("LEVEL: " + std::to_string(_currentLevelIndex + 1));
+    medText->setPos(getGameSize().x / 2 - medText->getWidth() / 2 - 3, 12);
+    medText->draw(_renderOffset.x, _renderOffset.y, 0, 0, 0);
+    medText->setPos(getGameSize().x / 2 - medText->getWidth() / 2 - 4, 11);
     medText->draw(_renderOffset.x, _renderOffset.y);
 
     // Render game over text
