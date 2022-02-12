@@ -20,7 +20,7 @@ bool GameLoop::init() {
 	else
 	{
 		// Create window
-		_window = SDL_CreateWindow("SDL Game Jam 2022", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, GAME_WIDTH * RENDER_SCALE, GAME_HEIGHT * RENDER_SCALE, SDL_WINDOW_BORDERLESS);
+		_window = SDL_CreateWindow("G.E.O. JOE", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, GAME_WIDTH * RENDER_SCALE, GAME_HEIGHT * RENDER_SCALE, SDL_WINDOW_BORDERLESS);
 		if(_window == nullptr)
 		{
 			std::cout << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;

@@ -4,6 +4,10 @@ build
 .vscode
 
 # Individual files
+geojoe.png
+geojoe_banner.png
+tile.png
 
 # File types
 *.pal
+*.gif
