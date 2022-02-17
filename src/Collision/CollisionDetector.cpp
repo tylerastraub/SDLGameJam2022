@@ -73,9 +73,9 @@ std::vector<SDL_Point> CollisionDetector::calculateShotPath(Grid grid, SDL_Point
         currentLineTarget = calculateNextTargetAfterBounce(grid, currentLineStart, collisionPoint, collidedEdge, normalVec);
         if(normalVec.x > 0) normalVec.x = 1; else if(normalVec.x < 0) normalVec.x = -1;
         if(normalVec.y > 0) normalVec.y = 1; else if(normalVec.y < 0) normalVec.y = -1;
-        SDL_Point extraVec;
-        extraVec.x = (currentLineTarget.x - collisionPoint.x) / std::abs(currentLineTarget.x - collisionPoint.x);
-        extraVec.y = (currentLineTarget.y - collisionPoint.y) / std::abs(currentLineTarget.y - collisionPoint.y);
+        // SDL_Point extraVec;
+        // extraVec.x = (currentLineTarget.x - collisionPoint.x) / std::abs(currentLineTarget.x - collisionPoint.x);
+        // extraVec.y = (currentLineTarget.y - collisionPoint.y) / std::abs(currentLineTarget.y - collisionPoint.y);
         currentLineStart = {collisionPoint.x + normalVec.x, collisionPoint.y + normalVec.y};
 
         ++bounces;

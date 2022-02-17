@@ -36,7 +36,7 @@ bool GameLoop::init() {
                 // Render flags
                 SDL_RenderSetLogicalSize(_renderer, GAME_WIDTH, GAME_HEIGHT);
                 if(SDL_SetRenderDrawBlendMode(_renderer, SDL_BLENDMODE_BLEND) == -1) {
-                    std::cout << "Error: failed to set render draw blend mode to SDL_BLENDMODE_BLEND. SDL_Error: " << SDL_GetError << std::endl;
+                    std::cout << "Error: failed to set render draw blend mode to SDL_BLENDMODE_BLEND. SDL_Error: " << SDL_GetError() << std::endl;
                 }
                 if(!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0")) {
                     std::cout << "Warning: Nearest pixel sampling not enabled!" << std::endl;

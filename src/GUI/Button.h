@@ -10,7 +10,7 @@ public:
     ~Button() = default;
 
     virtual void onClick() = 0;
-    virtual void render(int xOffset, int yOffset) = 0;
+    virtual void render(int xOffset, int yOffset) override = 0;
 
     void onLeftMouseButtonDown() override;
     void onLeftMouseButtonUp() override;

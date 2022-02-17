@@ -225,6 +225,8 @@ bool Tilemap::canPlaceObject(Object* obj) {
                 getTile(objectTilePos.x + 1, objectTilePos.y - 1) != TileType::LONG_RIGHT_TRIANGLE_NORTH &&
                 getTile(objectTilePos.x + 1, objectTilePos.y - 1) != TileType::LONG_RIGHT_TRIANGLE_SOUTH);
             break;
+        default:
+            break;
     }
 
     return false;
@@ -291,6 +293,8 @@ bool Tilemap::canPlaceObject(TileType tileType, int x, int y) {
                 getTile(x, y) != TileType::LONG_RIGHT_TRIANGLE_WEST &&
                 getTile(x + 1, y - 1) != TileType::LONG_RIGHT_TRIANGLE_NORTH &&
                 getTile(x + 1, y - 1) != TileType::LONG_RIGHT_TRIANGLE_SOUTH);
+            break;
+        default:
             break;
     }
 

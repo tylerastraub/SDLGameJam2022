@@ -15,7 +15,7 @@ enum TextSize {
 class State {
 public:
     State() = default;
-    ~State() = default;
+    virtual ~State() = default;
 
     virtual void init() = 0;
     virtual void handleInput() = 0;
