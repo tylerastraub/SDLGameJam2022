@@ -433,6 +433,7 @@ void GameState::loadNextLevel() {
     ++_currentLevelIndex;
     if(_currentLevelIndex >= _levels.size()) {
         _gameOver = true;
+        _currentLevelIndex = _levels.size() - 1;
     }
     else {
         std::vector<std::vector<int>> levelMap = LevelLoader::loadLevel(_levels[_currentLevelIndex].first);
