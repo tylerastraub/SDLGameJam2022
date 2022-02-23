@@ -29,6 +29,8 @@ void ObjectClickable::onLeftMouseButtonDown() {
                 _object = std::make_shared<Diamond>(ObjectDirection::NORTH);
                 break;
             }
+            default:
+                break;
         }
         _object->setPosition(getPosition().x - _object->getNaturalSize().x / 2,
             getPosition().y - _object->getNaturalSize().y / 2);
