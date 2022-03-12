@@ -20,7 +20,7 @@ bool GameLoop::init() {
 	else
 	{
 		// Create window
-		_window = SDL_CreateWindow("G.E.O. JOE", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, GAME_WIDTH * RENDER_SCALE, GAME_HEIGHT * RENDER_SCALE, SDL_WINDOW_BORDERLESS);
+		_window = SDL_CreateWindow("G.E.O. JOE", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, GAME_WIDTH * RENDER_SCALE, GAME_HEIGHT * RENDER_SCALE, SDL_WINDOW_SHOWN);
 		if(_window == nullptr)
 		{
 			std::cout << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
@@ -110,11 +110,11 @@ void GameLoop::startLoop() {
             if(e.type == SDL_QUIT) {
                 _exitFlag = true;
             }
-            else if(e.type == SDL_KEYDOWN) {
-                if(e.key.keysym.sym == SDLK_ESCAPE) {
-                    _exitFlag = true;
-                }
-            }
+            // else if(e.type == SDL_KEYDOWN) {
+            //     if(e.key.keysym.sym == SDLK_ESCAPE) {
+            //         _exitFlag = true;
+            //     }
+            // }
             else if(e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEBUTTONUP) {
                 _currentState->handleMouseInput(e);
             }

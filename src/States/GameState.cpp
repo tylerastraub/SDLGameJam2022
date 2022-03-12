@@ -388,7 +388,7 @@ void GameState::render() {
 
     // Render controls text
     Text* smallText = getText(TextSize::SMALL);
-    smallText->setString("LEFT CLICK LASER TO AIM SHOT/RIGHT CLICK TO SHOOT/'R' TO ROTATE PICKED UP OBJECT/'ESC' TO QUIT");
+    smallText->setString("LEFT CLICK LASER TO AIM SHOT/RIGHT CLICK TO SHOOT/'R' TO ROTATE PICKED UP OBJECT");
     smallText->setPos(5, getGameSize().y - smallText->getHeight() + 10);
     smallText->draw(_renderOffset.x, _renderOffset.y, 0, 0, 0);
     smallText->setPos(4, getGameSize().y - smallText->getHeight() + 9);

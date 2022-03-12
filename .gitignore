@@ -7,6 +7,7 @@ build
 geojoe.png
 geojoe_banner.png
 tile.png
+.DS_Store
 
 # File types
 *.pal
